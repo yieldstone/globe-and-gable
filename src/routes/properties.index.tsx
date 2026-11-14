@@ -1,0 +1,86 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { PropertyCard } from "@/components/site/property-card";
+import { SearchFilters } from "@/components/site/search-filters";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { filterProperties, parseFilters, properties, type PropertyFilters } from "@/lib/properties";
+
+export const Route = createFileRoute("/properties/")({
+  validateSearch: (search: Record<string, unknown>): PropertyFilters => parseFilters(search),
+  head: () => ({
+    meta: [
+      { title: "Properties for sale and rent worldwide | Atlas Estates" },
+      { name: "description", content: "Browse apartments, houses and villas worldwide. Filter by country, city, buy or rent, price and size." },
+      { property: "og:title", content: "Properties for sale and rent worldwide | Atlas Estates" },
+      { property: "og:description", content: "Filter global listings by country, city, price and size." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: PropertiesPage,
+});
+
+type Sort = "featured" | "price-asc" | "price-desc" | "size-desc";
+
+function PropertiesPage() {
+  const filters = Route.useSearch();
+  const navigate = useNavigate({ from: "/properties/" });
+  const [sort, setSort] = useState<Sort>("featured");
+
+  const results = useMemo(() => {
+    const list = filterProperties(properties, filters);
+    if (sort === "price-asc") return [...list].sort((a, b) => a.priceUsd - b.priceUsd);
+    if (sort === "price-desc") return [...list].sort((a, b) => b.priceUsd - a.priceUsd);
+    if (sort === "size-desc") return [...list].sort((a, b) => b.sizeM2 - a.sizeM2);
+    return list;
+  }, [filters, sort]);
+
+  const title =
+    filters.type === "rent" ? "Homes for rent" : filters.type === "buy" ? "Homes for sale" : "All properties";
+
+  return (
+    <>
+      <section className="bg-navy pb-24 pt-12 text-navy-foreground">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="eyebrow text-highlight">Search</p>
+          <h1 className="mt-2 text-4xl font-medium sm:text-5xl">
+            {title}
+            {filters.city ? ` in ${filters.city}` : filters.country ? ` in ${filters.country}` : " worldwide"}
+          </h1>
+        </div>
+      </section>
+      <div className="mx-auto -mt-16 max-w-7xl px-4 sm:px-6">
+        <SearchFilters value={filters} onChange={(next) => navigate({ search: next, replace: true })} />
+      </div>
+      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{results.length}</span> of {properties.length} properties
+          </p>
+          <Select value={sort} onValueChange={(v) => setSort(v as Sort)}>
+            <SelectTrigger className="w-52" aria-label="Sort"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="featured">Sort: Featured</SelectItem>
+              <SelectItem value="price-asc">Price: low to high</SelectItem>
+              <SelectItem value="price-desc">Price: high to low</SelectItem>
+              <SelectItem value="size-desc">Size: largest first</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {results.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-dashed p-12 text-center">
+            <p className="font-display text-xl">No properties match these filters</p>
+            <Button className="mt-6" variant="secondary" onClick={() => navigate({ search: {}, replace: true })}>
+              Clear filters
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {results.map((p) => <PropertyCard key={p.id} property={p} />)}
+          </div>
+        )}
+      </section>
+    </>
+  );
+}

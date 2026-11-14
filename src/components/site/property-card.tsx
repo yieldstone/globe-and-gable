@@ -1,0 +1,49 @@
+import { Link } from "@tanstack/react-router";
+import { Bath, BedDouble, MapPin, Maximize } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { img, type Property } from "@/lib/properties";
+import { useCurrency } from "./currency-context";
+
+export function PropertyCard({ property: p }: { property: Property }) {
+  const { price } = useCurrency();
+  return (
+    <Link
+      to="/properties/$propertyId"
+      params={{ propertyId: p.id }}
+      className="group block overflow-hidden rounded-2xl border bg-card shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <img
+          src={img(p.images[0], 800, 600)}
+          alt={p.title}
+          loading="lazy"
+          width={800}
+          height={600}
+          className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-card-image-overlay" />
+        <div className="absolute left-3 top-3 flex gap-2">
+          <Badge variant={p.listing === "buy" ? "default" : "highlight"}>
+            {p.listing === "buy" ? "For sale" : "For rent"}
+          </Badge>
+          <Badge variant="overlay">{p.kind}</Badge>
+        </div>
+        <p className="absolute bottom-3 left-4 font-display text-2xl font-semibold text-navy-foreground">
+          {price(p.priceUsd)}
+          {p.listing === "rent" && <span className="ml-1 font-sans text-sm font-medium">/ month</span>}
+        </p>
+      </div>
+      <div className="p-5">
+        <h3 className="text-lg font-semibold leading-snug group-hover:text-primary">{p.title}</h3>
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+          <MapPin className="size-3.5" /> {p.neighborhood}, {p.city}, {p.country}
+        </p>
+        <div className="mt-4 flex items-center gap-5 border-t pt-4 text-sm text-foreground/80">
+          <span className="flex items-center gap-1.5"><BedDouble className="size-4 text-primary" />{p.beds} bd</span>
+          <span className="flex items-center gap-1.5"><Bath className="size-4 text-primary" />{p.baths} ba</span>
+          <span className="flex items-center gap-1.5"><Maximize className="size-4 text-primary" />{p.sizeM2} m²</span>
+        </div>
+      </div>
+    </Link>
+  );
+}

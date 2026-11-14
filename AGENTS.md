@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Listing and agency data is static in `src/lib/properties.ts`; prices are stored in USD and converted for display via `src/lib/currency.ts`, so currency switching never touches the data.
+- Property filters live in URL search params on `/properties` (parsed by `parseFilters`) so searches are shareable; the home page keeps them in local state and hands them off on "View all".
+- Mortgage math lives in `src/lib/mortgage.ts` (pure, unit-tested) so the calculator page stays presentational.

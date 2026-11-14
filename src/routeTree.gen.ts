@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgenciesRouteImport } from './routes/agencies'
+import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calculator'
+import { Route as PostListingRouteImport } from './routes/post-listing'
+import { Route as PropertiesIndexRouteImport } from './routes/properties.index'
+import { Route as PropertiesPropertyIdRouteImport } from './routes/properties.$propertyId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgenciesRoute = AgenciesRouteImport.update({
+  id: '/agencies',
+  path: '/agencies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MortgageCalculatorRoute = MortgageCalculatorRouteImport.update({
+  id: '/mortgage-calculator',
+  path: '/mortgage-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostListingRoute = PostListingRouteImport.update({
+  id: '/post-listing',
+  path: '/post-listing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropertiesIndexRoute = PropertiesIndexRouteImport.update({
+  id: '/properties/',
+  path: '/properties/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropertiesPropertyIdRoute = PropertiesPropertyIdRouteImport.update({
+  id: '/properties/$propertyId',
+  path: '/properties/$propertyId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agencies': typeof AgenciesRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
+  '/post-listing': typeof PostListingRoute
+  '/properties/$propertyId': typeof PropertiesPropertyIdRoute
+  '/properties/': typeof PropertiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agencies': typeof AgenciesRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
+  '/post-listing': typeof PostListingRoute
+  '/properties/$propertyId': typeof PropertiesPropertyIdRoute
+  '/properties': typeof PropertiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agencies': typeof AgenciesRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
+  '/post-listing': typeof PostListingRoute
+  '/properties/$propertyId': typeof PropertiesPropertyIdRoute
+  '/properties/': typeof PropertiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/agencies'
+    | '/mortgage-calculator'
+    | '/post-listing'
+    | '/properties/$propertyId'
+    | '/properties/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/agencies'
+    | '/mortgage-calculator'
+    | '/post-listing'
+    | '/properties/$propertyId'
+    | '/properties'
+  id:
+    | '__root__'
+    | '/'
+    | '/agencies'
+    | '/mortgage-calculator'
+    | '/post-listing'
+    | '/properties/$propertyId'
+    | '/properties/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgenciesRoute: typeof AgenciesRoute
+  MortgageCalculatorRoute: typeof MortgageCalculatorRoute
+  PostListingRoute: typeof PostListingRoute
+  PropertiesPropertyIdRoute: typeof PropertiesPropertyIdRoute
+  PropertiesIndexRoute: typeof PropertiesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +117,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agencies': {
+      id: '/agencies'
+      path: '/agencies'
+      fullPath: '/agencies'
+      preLoaderRoute: typeof AgenciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mortgage-calculator': {
+      id: '/mortgage-calculator'
+      path: '/mortgage-calculator'
+      fullPath: '/mortgage-calculator'
+      preLoaderRoute: typeof MortgageCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/post-listing': {
+      id: '/post-listing'
+      path: '/post-listing'
+      fullPath: '/post-listing'
+      preLoaderRoute: typeof PostListingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/properties/': {
+      id: '/properties/'
+      path: '/properties'
+      fullPath: '/properties/'
+      preLoaderRoute: typeof PropertiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/properties/$propertyId': {
+      id: '/properties/$propertyId'
+      path: '/properties/$propertyId'
+      fullPath: '/properties/$propertyId'
+      preLoaderRoute: typeof PropertiesPropertyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgenciesRoute: AgenciesRoute,
+  MortgageCalculatorRoute: MortgageCalculatorRoute,
+  PostListingRoute: PostListingRoute,
+  PropertiesPropertyIdRoute: PropertiesPropertyIdRoute,
+  PropertiesIndexRoute: PropertiesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
