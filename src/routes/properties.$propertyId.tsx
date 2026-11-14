@@ -3,6 +3,7 @@ import {
   ArrowLeft, Bath, BedDouble, Calculator, CalendarDays, Check, ChevronLeft, ChevronRight,
   Expand, Mail, MapPin, Maximize, Phone, Star,
 } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -13,11 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PropertyCard } from "@/components/site/property-card";
 import { useCurrency } from "@/components/site/currency-context";
-import { getAgency, getProperty, img, properties, type Property } from "@/lib/properties";
+import { getAgency, img, properties, type Property } from "@/lib/properties";
+import { propertyQuery } from "@/lib/listings.queries";
 
 export const Route = createFileRoute("/properties/$propertyId")({
-  loader: ({ params }) => {
-    const property = getProperty(params.propertyId);
+  loader: async ({ params, context }) => {
+    const property = await context.queryClient.ensureQueryData(propertyQuery(params.propertyId));
     if (!property) throw notFound();
     return { property };
   },
@@ -26,7 +28,8 @@ export const Route = createFileRoute("/properties/$propertyId")({
     const p = loaderData.property;
     const title = `${p.title} — ${p.city}, ${p.country} | Atlas Estates`;
     const description = `${p.kind} ${p.listing === "buy" ? "for sale" : "for rent"} in ${p.neighborhood}, ${p.city}. ${p.beds} bedrooms, ${p.baths} bathrooms, ${p.sizeM2} m².`;
-    const image = img(p.images[0], 1200, 630);
+    // Submitted listings use expiring photo links, so only the built-in samples get a share image.
+    const image = p.userSubmitted ? null : img(p.images[0], 1200, 630);
     return {
       meta: [
         { title },
@@ -34,9 +37,8 @@ export const Route = createFileRoute("/properties/$propertyId")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
-        { property: "og:image", content: image },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:image", content: image },
+        ...(image ? [{ property: "og:image", content: image }, { name: "twitter:image", content: image }] : []),
       ],
     };
   },
@@ -50,15 +52,23 @@ export const Route = createFileRoute("/properties/$propertyId")({
 });
 
 function PropertyPage() {
-  const { property: p } = Route.useLoaderData();
+  const { propertyId } = Route.useParams();
+  const { data } = useSuspenseQuery(propertyQuery(propertyId));
+  const p = data ?? Route.useLoaderData().property;
   const { price } = useCurrency();
-  const agency = getAgency(p.agencyId);
+  const agency = p.agencyId ? getAgency(p.agencyId) : undefined;
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
   const similar = properties.filter((x) => x.id !== p.id && (x.kind === p.kind || x.listing === p.listing)).slice(0, 3);
 
   const d = 0.012;
-  const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${p.lng - d}%2C${p.lat - d}%2C${p.lng + d}%2C${p.lat + d}&layer=mapnik&marker=${p.lat}%2C${p.lng}`;
+  const hasCoords = p.lat != null && p.lng != null;
+  const lat = p.lat ?? 0;
+  const lng = p.lng ?? 0;
+  const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - d}%2C${lat - d}%2C${lng + d}%2C${lat + d}&layer=mapnik&marker=${lat}%2C${lng}`;
+  const largeMapHref = hasCoords
+    ? `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`
+    : `https://www.openstreetmap.org/search?query=${encodeURIComponent(`${p.neighborhood}, ${p.city}, ${p.country}`)}`;
 
   return (
     <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
@@ -92,7 +102,7 @@ function PropertyPage() {
               { icon: BedDouble, label: "Bedrooms", value: p.beds },
               { icon: Bath, label: "Bathrooms", value: p.baths },
               { icon: Maximize, label: "Living area", value: `${p.sizeM2} m²` },
-              { icon: CalendarDays, label: "Year built", value: p.yearBuilt },
+              { icon: CalendarDays, label: "Year built", value: p.yearBuilt || "—" },
             ].map((s) => (
               <div key={s.label} className="rounded-xl border bg-card p-4">
                 <s.icon className="size-5 text-primary" />
@@ -105,23 +115,33 @@ function PropertyPage() {
           <h2 className="mt-10 text-2xl font-medium">About this home</h2>
           <p className="mt-3 leading-relaxed text-foreground/80">{p.description}</p>
 
-          <h2 className="mt-10 text-2xl font-medium">Features</h2>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {p.features.map((f) => (
-              <li key={f} className="flex items-center gap-2.5 text-sm">
-                <span className="grid size-6 place-items-center rounded-full bg-accent text-primary"><Check className="size-3.5" /></span>
-                {f}
-              </li>
-            ))}
-          </ul>
+          {p.features.length > 0 && (
+            <>
+              <h2 className="mt-10 text-2xl font-medium">Features</h2>
+              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                {p.features.map((f) => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm">
+                    <span className="grid size-6 place-items-center rounded-full bg-accent text-primary"><Check className="size-3.5" /></span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
 
           <h2 className="mt-10 text-2xl font-medium">Location</h2>
           <p className="mt-1 text-sm text-muted-foreground">{p.neighborhood}, {p.city}</p>
-          <div className="mt-4 overflow-hidden rounded-2xl border shadow-card">
-            <iframe title={`Map of ${p.title}`} src={mapSrc} className="h-96 w-full" loading="lazy" />
-          </div>
+          {hasCoords ? (
+            <div className="mt-4 overflow-hidden rounded-2xl border shadow-card">
+              <iframe title={`Map of ${p.title}`} src={mapSrc} className="h-96 w-full" loading="lazy" />
+            </div>
+          ) : (
+            <div className="mt-4 grid h-40 place-items-center rounded-2xl border border-dashed text-sm text-muted-foreground">
+              Exact map position not available for this listing
+            </div>
+          )}
           <a
-            href={`https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lng}#map=15/${p.lat}/${p.lng}`}
+            href={largeMapHref}
             target="_blank"
             rel="noreferrer"
             className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
@@ -139,6 +159,7 @@ function PropertyPage() {
               </span>
               <div>
                 <p className="font-semibold">{p.agent.name}</p>
+                {!agency && <p className="text-sm text-muted-foreground">Private seller</p>}
                 {agency && (
                   <p className="flex items-center gap-1 text-sm text-muted-foreground">
                     {agency.name} · <Star className="size-3.5 fill-highlight text-highlight" /> {agency.rating}
@@ -149,9 +170,11 @@ function PropertyPage() {
             <Button size="lg" className="mt-6 w-full" onClick={() => setContactOpen(true)}>
               <Mail /> Contact agent
             </Button>
-            <Button asChild size="lg" variant="outline" className="mt-2 w-full">
-              <a href={`tel:${p.agent.phone.replace(/\s/g, "")}`}><Phone /> {p.agent.phone}</a>
-            </Button>
+            {p.agent.phone && (
+              <Button asChild size="lg" variant="outline" className="mt-2 w-full">
+                <a href={`tel:${p.agent.phone.replace(/\s/g, "")}`}><Phone /> {p.agent.phone}</a>
+              </Button>
+            )}
           </div>
 
           {p.listing === "buy" && (

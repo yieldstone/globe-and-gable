@@ -23,8 +23,8 @@ export interface Property {
   country: string;
   city: string;
   neighborhood: string;
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
   priceUsd: number; // total price for buy, monthly for rent
   sizeM2: number;
   beds: number;
@@ -33,12 +33,17 @@ export interface Property {
   images: string[];
   description: string;
   features: string[];
-  agencyId: string;
-  agent: { name: string; phone: string; email: string };
+  agencyId?: string | undefined;
+  agent: { name: string; phone?: string | undefined; email?: string | undefined };
+  /** True for listings submitted through "Post a Listing" (stored in the database). */
+  userSubmitted?: boolean;
 }
 
+/** Unsplash photo id for the built-in samples, or an already-complete URL for submitted listings. */
 export const img = (id: string | undefined, w = 1200, h?: number) =>
-  `https://images.unsplash.com/photo-${id ?? ""}?auto=format&fit=crop&w=${w}${h ? `&h=${h}` : ""}&q=80`;
+  id?.startsWith("http")
+    ? id
+    : `https://images.unsplash.com/photo-${id ?? ""}?auto=format&fit=crop&w=${w}${h ? `&h=${h}` : ""}&q=80`;
 
 export const agencies: Agency[] = [
   { id: "skyline-realty", name: "Skyline Realty Group", city: "New York", country: "United States", founded: 2004, rating: 4.9, agents: 86, phone: "+1 212 555 0148", email: "hello@skylinerealty.com", specialty: "Luxury condos & penthouses", logoInitials: "SR" },
@@ -209,11 +214,15 @@ export const properties: Property[] = [
   },
 ];
 
-export const countries = Array.from(new Set(properties.map((p) => p.country))).sort();
+export function countriesIn(list: Property[]) {
+  return Array.from(new Set(list.map((p) => p.country))).sort();
+}
 
-export function citiesFor(country?: string) {
+export const countries = countriesIn(properties);
+
+export function citiesFor(country?: string, list: Property[] = properties) {
   return Array.from(
-    new Set(properties.filter((p) => !country || p.country === country).map((p) => p.city)),
+    new Set(list.filter((p) => !country || p.country === country).map((p) => p.city)),
   ).sort();
 }
 

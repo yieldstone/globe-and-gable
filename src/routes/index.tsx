@@ -1,11 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Building2, Calculator, Globe2, ShieldCheck } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import heroImg from "@/assets/hero-city.jpg";
 import { Button } from "@/components/ui/button";
 import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
-import { agencies, countries, filterProperties, properties, type PropertyFilters } from "@/lib/properties";
+import { agencies, countriesIn, filterProperties, properties as sampleProperties, type PropertyFilters } from "@/lib/properties";
+import { submittedListingsQuery } from "@/lib/listings.queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,13 +20,17 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(submittedListingsQuery()),
   component: Index,
 });
 
 function Index() {
   const [filters, setFilters] = useState<PropertyFilters>({});
   const navigate = useNavigate();
-  const results = useMemo(() => filterProperties(properties, filters), [filters]);
+  const { data: submitted } = useSuspenseQuery(submittedListingsQuery());
+  const properties = useMemo(() => [...submitted, ...sampleProperties], [submitted]);
+  const countries = countriesIn(properties);
+  const results = useMemo(() => filterProperties(properties, filters), [properties, filters]);
 
   return (
     <>
@@ -47,6 +53,7 @@ function Index() {
         <SearchFilters
           value={filters}
           onChange={setFilters}
+          options={properties}
           submitLabel="View all"
           onSubmit={() => navigate({ to: "/properties", search: filters })}
         />

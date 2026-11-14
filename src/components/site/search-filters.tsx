@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { convertFromUsd, convertToUsd } from "@/lib/currency";
-import { citiesFor, countries, type PropertyFilters } from "@/lib/properties";
+import { citiesFor, countriesIn, properties as sampleProperties, type Property, type PropertyFilters } from "@/lib/properties";
 import { useCurrency } from "./currency-context";
 
 const ANY = "__any";
@@ -24,9 +24,12 @@ interface Props {
   onSubmit?: () => void;
   submitLabel?: string;
   className?: string;
+  /** Listings used to build the country/city options. */
+  options?: Property[];
 }
 
-export function SearchFilters({ value, onChange, onSubmit, submitLabel = "Search", className }: Props) {
+export function SearchFilters({ value, onChange, onSubmit, submitLabel = "Search", className, options = sampleProperties }: Props) {
+  const countries = countriesIn(options);
   const { currency } = useCurrency();
   const symbol = currency === "EUR" ? "€" : "$";
   const set = (patch: Partial<PropertyFilters>) => onChange({ ...value, ...patch });
@@ -97,7 +100,7 @@ export function SearchFilters({ value, onChange, onSubmit, submitLabel = "Search
             <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value={ANY}>All cities</SelectItem>
-              {citiesFor(value.country).map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              {citiesFor(value.country, options).map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
             </SelectContent>
           </Select>
         </Field>

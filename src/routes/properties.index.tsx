@@ -1,10 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { filterProperties, parseFilters, properties, type PropertyFilters } from "@/lib/properties";
+import { filterProperties, parseFilters, properties as sampleProperties, type PropertyFilters } from "@/lib/properties";
+import { submittedListingsQuery } from "@/lib/listings.queries";
 
 export const Route = createFileRoute("/properties/")({
   validateSearch: (search: Record<string, unknown>): PropertyFilters => parseFilters(search),
@@ -18,6 +20,7 @@ export const Route = createFileRoute("/properties/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(submittedListingsQuery()),
   component: PropertiesPage,
 });
 
@@ -27,6 +30,8 @@ function PropertiesPage() {
   const filters = Route.useSearch();
   const navigate = useNavigate({ from: "/properties/" });
   const [sort, setSort] = useState<Sort>("featured");
+  const { data: submitted } = useSuspenseQuery(submittedListingsQuery());
+  const properties = useMemo(() => [...submitted, ...sampleProperties], [submitted]);
 
   const results = useMemo(() => {
     const list = filterProperties(properties, filters);
@@ -34,7 +39,7 @@ function PropertiesPage() {
     if (sort === "price-desc") return [...list].sort((a, b) => b.priceUsd - a.priceUsd);
     if (sort === "size-desc") return [...list].sort((a, b) => b.sizeM2 - a.sizeM2);
     return list;
-  }, [filters, sort]);
+  }, [properties, filters, sort]);
 
   const title =
     filters.type === "rent" ? "Homes for rent" : filters.type === "buy" ? "Homes for sale" : "All properties";
@@ -51,7 +56,7 @@ function PropertiesPage() {
         </div>
       </section>
       <div className="mx-auto -mt-16 max-w-7xl px-4 sm:px-6">
-        <SearchFilters value={filters} onChange={(next) => navigate({ search: next, replace: true })} />
+        <SearchFilters value={filters} options={properties} onChange={(next) => navigate({ search: next, replace: true })} />
       </div>
       <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
