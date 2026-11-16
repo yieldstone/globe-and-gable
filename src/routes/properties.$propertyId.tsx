@@ -3,7 +3,7 @@ import {
   ArrowLeft, Bath, BedDouble, Calculator, CalendarDays, Check, ChevronLeft, ChevronRight,
   Expand, Mail, MapPin, Maximize, Phone, Star,
 } from "lucide-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -14,8 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PropertyCard } from "@/components/site/property-card";
 import { useCurrency } from "@/components/site/currency-context";
-import { getAgency, img, properties, type Property } from "@/lib/properties";
-import { propertyQuery } from "@/lib/listings.queries";
+import { getAgency, img, type Property } from "@/lib/properties";
+import { propertiesQuery, propertyQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/properties/$propertyId")({
   loader: async ({ params, context }) => {
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/properties/$propertyId")({
     const title = `${p.title} — ${p.city}, ${p.country} | Atlas Estates`;
     const description = `${p.kind} ${p.listing === "buy" ? "for sale" : "for rent"} in ${p.neighborhood}, ${p.city}. ${p.beds} bedrooms, ${p.baths} bathrooms, ${p.sizeM2} m².`;
     // Submitted listings use expiring photo links, so only the built-in samples get a share image.
-    const image = p.userSubmitted ? null : img(p.images[0], 1200, 630);
+    const image = p.userId ? null : img(p.images[0], 1200, 630);
     return {
       meta: [
         { title },
@@ -59,7 +59,8 @@ function PropertyPage() {
   const agency = p.agencyId ? getAgency(p.agencyId) : undefined;
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
-  const similar = properties.filter((x) => x.id !== p.id && (x.kind === p.kind || x.listing === p.listing)).slice(0, 3);
+  const { data: all = [] } = useQuery(propertiesQuery());
+  const similar = all.filter((x) => x.id !== p.id && (x.kind === p.kind || x.listing === p.listing)).slice(0, 3);
 
   const d = 0.012;
   const hasCoords = p.lat != null && p.lng != null;

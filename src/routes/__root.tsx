@@ -15,6 +15,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { CurrencyProvider } from "@/components/site/currency-context";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/hooks/use-auth";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -131,6 +132,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthProvider>
       <CurrencyProvider>
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
@@ -142,6 +144,7 @@ function RootComponent() {
         </div>
         <Toaster position="top-center" />
       </CurrencyProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

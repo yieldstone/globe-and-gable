@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mail, MapPin, Phone, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { agencies, img, properties } from "@/lib/properties";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { agencies, img } from "@/lib/properties";
+import { propertiesQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/agencies")({
   head: () => ({
@@ -14,10 +16,12 @@ export const Route = createFileRoute("/agencies")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(propertiesQuery()),
   component: AgenciesPage,
 });
 
 function AgenciesPage() {
+  const { data: properties } = useSuspenseQuery(propertiesQuery());
   return (
     <>
       <section className="bg-navy pb-16 pt-12 text-navy-foreground">

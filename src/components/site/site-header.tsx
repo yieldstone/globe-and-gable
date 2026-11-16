@@ -1,5 +1,7 @@
-import { Link } from "@tanstack/react-router";
-import { Check, Globe, Menu } from "lucide-react";
+import { Check, Globe, LogOut, Menu, UserRound } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -75,6 +77,42 @@ function LocaleSwitcher() {
   );
 }
 
+function AccountMenu() {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  if (loading) return <span className="w-20" />;
+  if (!user) {
+    return (
+      <Button asChild variant="on-navy" size="sm">
+        <Link to="/auth" search={{ redirect: undefined, mode: undefined }}>Sign in</Link>
+      </Button>
+    );
+  }
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="on-navy" size="icon" aria-label="Account">
+          <UserRound />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-60">
+        <DropdownMenuLabel className="truncate font-normal text-muted-foreground">{user.email}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onSelect={async () => {
+            await queryClient.cancelQueries();
+            await signOut();
+            navigate({ to: "/", replace: true });
+          }}
+        >
+          <LogOut className="size-4" /> Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
@@ -95,6 +133,7 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <LocaleSwitcher />
+          <AccountMenu />
           <Button asChild variant="hero" size="sm" className="hidden sm:inline-flex">
             <Link to="/post-listing">List property</Link>
           </Button>

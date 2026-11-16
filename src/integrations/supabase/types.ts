@@ -109,6 +109,99 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      properties: {
+        Row: {
+          agency_id: string | null
+          baths: number
+          beds: number
+          city: string
+          country: string
+          created_at: string
+          description: string
+          features: string[]
+          id: string
+          images: string[]
+          kind: string
+          lat: number | null
+          listing_type: string
+          lng: number | null
+          neighborhood: string | null
+          price_usd: number
+          seller_name: string
+          seller_phone: string | null
+          size_m2: number
+          title: string
+          user_id: string | null
+          year_built: number | null
+        }
+        Insert: {
+          agency_id?: string | null
+          baths: number
+          beds: number
+          city: string
+          country: string
+          created_at?: string
+          description: string
+          features?: string[]
+          id?: string
+          images: string[]
+          kind: string
+          lat?: number | null
+          listing_type: string
+          lng?: number | null
+          neighborhood?: string | null
+          price_usd: number
+          seller_name: string
+          seller_phone?: string | null
+          size_m2: number
+          title: string
+          user_id?: string | null
+          year_built?: number | null
+        }
+        Update: {
+          agency_id?: string | null
+          baths?: number
+          beds?: number
+          city?: string
+          country?: string
+          created_at?: string
+          description?: string
+          features?: string[]
+          id?: string
+          images?: string[]
+          kind?: string
+          lat?: number | null
+          listing_type?: string
+          lng?: number | null
+          neighborhood?: string | null
+          price_usd?: number
+          seller_name?: string
+          seller_phone?: string | null
+          size_m2?: number
+          title?: string
+          user_id?: string | null
+          year_built?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

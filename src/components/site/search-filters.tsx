@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { convertFromUsd, convertToUsd } from "@/lib/currency";
-import { citiesFor, countriesIn, properties as sampleProperties, type Property, type PropertyFilters } from "@/lib/properties";
+import { citiesFor, countriesIn, type Property, type PropertyFilters } from "@/lib/properties";
 import { useCurrency } from "./currency-context";
 
 const ANY = "__any";
@@ -25,10 +25,10 @@ interface Props {
   submitLabel?: string;
   className?: string;
   /** Listings used to build the country/city options. */
-  options?: Property[];
+  options: Property[];
 }
 
-export function SearchFilters({ value, onChange, onSubmit, submitLabel = "Search", className, options = sampleProperties }: Props) {
+export function SearchFilters({ value, onChange, onSubmit, submitLabel = "Search", className, options }: Props) {
   const countries = countriesIn(options);
   const { currency } = useCurrency();
   const symbol = currency === "EUR" ? "€" : "$";

@@ -8,6 +8,13 @@
       "when": 1794674398960,
       "tag": "0000_create_listings",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794842193816,
+      "tag": "0001_user_profiles_and_properties",
+      "breakpoints": true
     }
   ]
 }

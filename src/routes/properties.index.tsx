@@ -5,8 +5,8 @@ import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { filterProperties, parseFilters, properties as sampleProperties, type PropertyFilters } from "@/lib/properties";
-import { submittedListingsQuery } from "@/lib/listings.queries";
+import { filterProperties, parseFilters, type PropertyFilters } from "@/lib/properties";
+import { propertiesQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/properties/")({
   validateSearch: (search: Record<string, unknown>): PropertyFilters => parseFilters(search),
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/properties/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(submittedListingsQuery()),
+  loader: ({ context }) => context.queryClient.ensureQueryData(propertiesQuery()),
   component: PropertiesPage,
 });
 
@@ -30,8 +30,7 @@ function PropertiesPage() {
   const filters = Route.useSearch();
   const navigate = useNavigate({ from: "/properties/" });
   const [sort, setSort] = useState<Sort>("featured");
-  const { data: submitted } = useSuspenseQuery(submittedListingsQuery());
-  const properties = useMemo(() => [...submitted, ...sampleProperties], [submitted]);
+  const { data: properties } = useSuspenseQuery(propertiesQuery());
 
   const results = useMemo(() => {
     const list = filterProperties(properties, filters);

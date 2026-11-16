@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgenciesRouteImport } from './routes/agencies'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calculator'
 import { Route as PostListingRouteImport } from './routes/post-listing'
 import { Route as PropertiesIndexRouteImport } from './routes/properties.index'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const AgenciesRoute = AgenciesRouteImport.update({
   id: '/agencies',
   path: '/agencies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MortgageCalculatorRoute = MortgageCalculatorRouteImport.update({
@@ -50,6 +56,7 @@ const PropertiesPropertyIdRoute = PropertiesPropertyIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agencies': typeof AgenciesRoute
+  '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agencies': typeof AgenciesRoute
+  '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/agencies': typeof AgenciesRoute
+  '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/agencies'
+    | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
     | '/properties/$propertyId'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/agencies'
+    | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
     | '/properties/$propertyId'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/agencies'
+    | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
     | '/properties/$propertyId'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AgenciesRoute: typeof AgenciesRoute
+  AuthRoute: typeof AuthRoute
   MortgageCalculatorRoute: typeof MortgageCalculatorRoute
   PostListingRoute: typeof PostListingRoute
   PropertiesPropertyIdRoute: typeof PropertiesPropertyIdRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/agencies'
       fullPath: '/agencies'
       preLoaderRoute: typeof AgenciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mortgage-calculator': {
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AgenciesRoute: AgenciesRoute,
+  AuthRoute: AuthRoute,
   MortgageCalculatorRoute: MortgageCalculatorRoute,
   PostListingRoute: PostListingRoute,
   PropertiesPropertyIdRoute: PropertiesPropertyIdRoute,

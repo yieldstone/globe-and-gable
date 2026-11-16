@@ -6,8 +6,8 @@ import heroImg from "@/assets/hero-city.jpg";
 import { Button } from "@/components/ui/button";
 import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
-import { agencies, countriesIn, filterProperties, properties as sampleProperties, type PropertyFilters } from "@/lib/properties";
-import { submittedListingsQuery } from "@/lib/listings.queries";
+import { agencies, countriesIn, filterProperties, type PropertyFilters } from "@/lib/properties";
+import { propertiesQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,15 +20,14 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(submittedListingsQuery()),
+  loader: ({ context }) => context.queryClient.ensureQueryData(propertiesQuery()),
   component: Index,
 });
 
 function Index() {
   const [filters, setFilters] = useState<PropertyFilters>({});
   const navigate = useNavigate();
-  const { data: submitted } = useSuspenseQuery(submittedListingsQuery());
-  const properties = useMemo(() => [...submitted, ...sampleProperties], [submitted]);
+  const { data: properties } = useSuspenseQuery(propertiesQuery());
   const countries = countriesIn(properties);
   const results = useMemo(() => filterProperties(properties, filters), [properties, filters]);
 
