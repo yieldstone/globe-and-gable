@@ -1,4 +1,4 @@
-import { Check, Globe, LogOut, Menu, UserRound } from "lucide-react";
+import { Check, Globe, Inbox, LogOut, Menu, UserRound } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
@@ -99,6 +99,11 @@ function AccountMenu() {
       <DropdownMenuContent align="end" className="w-60">
         <DropdownMenuLabel className="truncate font-normal text-muted-foreground">{user.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/my-inquiries">
+            <Inbox className="size-4" /> My Inquiries
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={async () => {
             await queryClient.cancelQueries();
@@ -115,6 +120,7 @@ function AccountMenu() {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
   return (
     <header className="sticky top-0 z-40 border-b border-navy-border bg-navy/95 text-navy-foreground backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
@@ -159,6 +165,16 @@ export function SiteHeader() {
                     {n.label}
                   </Link>
                 ))}
+                {user && (
+                  <Link
+                    to="/my-inquiries"
+                    onClick={() => setOpen(false)}
+                    className="rounded-md px-3 py-2.5 font-medium hover:bg-accent"
+                    activeProps={{ className: "bg-accent text-primary" }}
+                  >
+                    My Inquiries
+                  </Link>
+                )}
               </nav>
             </SheetContent>
           </Sheet>

@@ -25,6 +25,50 @@ export const inquirySchema = z.object({
   message: z.string().trim().min(1, "Please write a message").max(2000),
 });
 
+export interface MyInquiry {
+  id: string;
+  createdAt: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  preferredDate: string | null;
+  message: string;
+  propertyId: string;
+  propertyTitle: string;
+  propertyCity: string;
+  propertyCountry: string;
+}
+
+// Signed-in owners read the inquiries sent on their own listings (RLS enforces ownership).
+export const getMyInquiries = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<MyInquiry[]> => {
+    const { data, error } = await context.supabase
+      .from("inquiries")
+      .select("id, created_at, full_name, email, phone, preferred_date, message, property_id, properties!inner(title, city, country)")
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("my inquiries fetch failed", error);
+      throw new Error("Could not load your inquiries. Please try again.");
+    }
+    return (data ?? []).map((row) => {
+      const prop = row.properties as unknown as { title: string; city: string; country: string };
+      return {
+        id: row.id,
+        createdAt: row.created_at,
+        fullName: row.full_name,
+        email: row.email,
+        phone: row.phone,
+        preferredDate: row.preferred_date,
+        message: row.message,
+        propertyId: row.property_id,
+        propertyTitle: prop.title,
+        propertyCity: prop.city,
+        propertyCountry: prop.country,
+      };
+    });
+  });
+
 // Public: anyone can send an inquiry; afterwards they get the seller's phone number.
 export const submitInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: z.input<typeof inquirySchema>) => inquirySchema.parse(input))

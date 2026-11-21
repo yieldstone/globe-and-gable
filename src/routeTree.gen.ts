@@ -10,16 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AgenciesRouteImport } from './routes/agencies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calculator'
 import { Route as PostListingRouteImport } from './routes/post-listing'
+import { Route as AuthenticatedMyInquiriesRouteImport } from './routes/_authenticated/my-inquiries'
 import { Route as PropertiesIndexRouteImport } from './routes/properties.index'
 import { Route as PropertiesPropertyIdRouteImport } from './routes/properties.$propertyId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgenciesRoute = AgenciesRouteImport.update({
@@ -42,6 +48,12 @@ const PostListingRoute = PostListingRouteImport.update({
   path: '/post-listing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMyInquiriesRoute =
+  AuthenticatedMyInquiriesRouteImport.update({
+    id: '/my-inquiries',
+    path: '/my-inquiries',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const PropertiesIndexRoute = PropertiesIndexRouteImport.update({
   id: '/properties/',
   path: '/properties/',
@@ -59,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
+  '/my-inquiries': typeof AuthenticatedMyInquiriesRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties/': typeof PropertiesIndexRoute
 }
@@ -68,16 +81,19 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
+  '/my-inquiries': typeof AuthenticatedMyInquiriesRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties': typeof PropertiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/agencies': typeof AgenciesRoute
   '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
+  '/_authenticated/my-inquiries': typeof AuthenticatedMyInquiriesRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties/': typeof PropertiesIndexRoute
 }
@@ -89,6 +105,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
+    | '/my-inquiries'
     | '/properties/$propertyId'
     | '/properties/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,21 +115,25 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
+    | '/my-inquiries'
     | '/properties/$propertyId'
     | '/properties'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/agencies'
     | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
+    | '/_authenticated/my-inquiries'
     | '/properties/$propertyId'
     | '/properties/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AgenciesRoute: typeof AgenciesRoute
   AuthRoute: typeof AuthRoute
   MortgageCalculatorRoute: typeof MortgageCalculatorRoute
@@ -128,6 +149,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agencies': {
@@ -158,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostListingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/my-inquiries': {
+      id: '/_authenticated/my-inquiries'
+      path: '/my-inquiries'
+      fullPath: '/my-inquiries'
+      preLoaderRoute: typeof AuthenticatedMyInquiriesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/properties/': {
       id: '/properties/'
       path: '/properties'
@@ -175,8 +210,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedMyInquiriesRoute: typeof AuthenticatedMyInquiriesRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedMyInquiriesRoute: AuthenticatedMyInquiriesRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AgenciesRoute: AgenciesRoute,
   AuthRoute: AuthRoute,
   MortgageCalculatorRoute: MortgageCalculatorRoute,
