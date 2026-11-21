@@ -31,7 +31,9 @@ async function toProperties(rows: Row[]): Promise<Property[]> {
   const paths = Array.from(new Set(rows.flatMap((r) => r.images).filter((i) => !i.startsWith("http"))));
   const urlFor = new Map<string, string>();
   if (paths.length > 0) {
-    const { data } = await publicClient().storage.from(PHOTOS_BUCKET).createSignedUrls(paths, SIGNED_URL_SECONDS);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Only paths referenced by listing rows are signed; the bucket itself has no public read rule.
+    const { data } = await supabaseAdmin.storage.from(PHOTOS_BUCKET).createSignedUrls(paths, SIGNED_URL_SECONDS);
     const serverBase = (process.env["SUPABASE_URL"] ?? "").replace(/\/+$/, "");
     const publicBase = (import.meta.env["VITE_SUPABASE_URL"] ?? process.env["VITE_SUPABASE_URL"] ?? serverBase).replace(/\/+$/, "");
     for (const item of data ?? []) {

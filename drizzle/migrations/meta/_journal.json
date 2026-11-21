@@ -15,6 +15,13 @@
       "when": 1794842193816,
       "tag": "0001_user_profiles_and_properties",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795291360256,
+      "tag": "0002_restrict_listing_photo_reads",
+      "breakpoints": true
     }
   ]
 }
