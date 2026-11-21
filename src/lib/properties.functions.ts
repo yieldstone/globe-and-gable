@@ -33,7 +33,7 @@ async function toProperties(rows: Row[]): Promise<Property[]> {
   if (paths.length > 0) {
     const { data } = await publicClient().storage.from(PHOTOS_BUCKET).createSignedUrls(paths, SIGNED_URL_SECONDS);
     const serverBase = (process.env["SUPABASE_URL"] ?? "").replace(/\/+$/, "");
-    const publicBase = (import.meta.env.VITE_SUPABASE_URL ?? process.env["VITE_SUPABASE_URL"] ?? serverBase).replace(/\/+$/, "");
+    const publicBase = (import.meta.env["VITE_SUPABASE_URL"] ?? process.env["VITE_SUPABASE_URL"] ?? serverBase).replace(/\/+$/, "");
     for (const item of data ?? []) {
       if (!item.path || !item.signedUrl) continue;
       const absolute = item.signedUrl.startsWith("http") ? item.signedUrl : `${serverBase}/storage/v1${item.signedUrl}`;

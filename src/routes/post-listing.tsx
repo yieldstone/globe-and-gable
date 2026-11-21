@@ -98,7 +98,7 @@ function ListingForm({ userId }: { userId: string }) {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (photos.length === 0) return toast.error("Add at least one photo");
+    if (photos.length === 0) { toast.error("Add at least one photo"); return; }
     const f = new FormData(e.currentTarget);
     const str = (k: string) => String(f.get(k) ?? "").trim();
     const num = (k: string) => (str(k) === "" ? null : Number(str(k)));

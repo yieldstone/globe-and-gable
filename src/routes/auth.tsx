@@ -50,7 +50,7 @@ function AuthPage() {
       password: String(f.get("password")),
     });
     setBusy(false);
-    if (error) return toast.error(error.message === "Invalid login credentials" ? "Wrong email or password" : error.message);
+    if (error) { toast.error(error.message === "Invalid login credentials" ? "Wrong email or password" : error.message); return; }
     toast.success("Welcome back");
   }
 
@@ -59,7 +59,7 @@ function AuthPage() {
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email"));
     const password = String(f.get("password"));
-    if (password !== String(f.get("confirm"))) return toast.error("Passwords don't match");
+    if (password !== String(f.get("confirm"))) { toast.error("Passwords don't match"); return; }
     setBusy(true);
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -67,8 +67,9 @@ function AuthPage() {
       options: { emailRedirectTo: `${window.location.origin}${redirect ?? "/"}` },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     if (!data.session) setCheckEmail(email);
+    return;
   }
 
   return (

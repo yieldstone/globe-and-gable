@@ -31,6 +31,9 @@ use the editor.
 
 ## Project rules
 
-- Listing and agency data is static in `src/lib/properties.ts`; prices are stored in USD and converted for display via `src/lib/currency.ts`, so currency switching never touches the data.
+- Listings live in the `properties` table and are read through public server functions in `src/lib/properties.functions.ts` (publishable client, SSR-safe); only the agency directory stays static in `src/lib/properties.ts`. Prices are stored in USD and converted for display via `src/lib/currency.ts`, so currency switching never touches the data.
+- Listing writes go from the browser Supabase client under the signed-in user's session; RLS enforces owner-only insert/update/delete, so no server function bypasses it.
+- Listing photos sit in a private storage bucket (the workspace blocks public buckets); rows store storage paths for uploads and full URLs for seeded samples, and the read server function turns paths into signed URLs.
+- The legacy `listings` / `listing_contacts` tables are deprecated and unused; never read or write them.
 - Property filters live in URL search params on `/properties` (parsed by `parseFilters`) so searches are shareable; the home page keeps them in local state and hands them off on "View all".
 - Mortgage math lives in `src/lib/mortgage.ts` (pure, unit-tested) so the calculator page stays presentational.
