@@ -1,3 +1,4 @@
+import type React from "react";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,7 +12,10 @@ interface AuthCtx {
   signOut: () => Promise<void>;
 }
 
-const Ctx = createContext<AuthCtx | null>(null);
+// Keep one context object across hot reloads: if this file is re-evaluated, a fresh
+// createContext() would no longer match the provider already mounted in the root.
+const g = globalThis as typeof globalThis & { __atlasAuthCtx?: React.Context<AuthCtx | null> };
+const Ctx = g.__atlasAuthCtx ?? (g.__atlasAuthCtx = createContext<AuthCtx | null>(null));
 
 /** Single app-wide session listener. Mounted once in the root route. */
 export function AuthProvider({ children }: { children: ReactNode }) {
