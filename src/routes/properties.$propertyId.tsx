@@ -4,7 +4,11 @@ import {
   Expand, Mail, MapPin, Maximize, Phone, Star,
 } from "lucide-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { CheckCircle2, Lock } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { getSellerPhone, submitInquiry } from "@/lib/inquiries.functions";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -59,6 +63,13 @@ function PropertyPage() {
   const agency = p.agencyId ? getAgency(p.agencyId) : undefined;
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
+  const { user } = useAuth();
+  const fetchPhone = useServerFn(getSellerPhone);
+  const [phone, setPhone] = useState<string | null>(null);
+  useEffect(() => {
+    if (!user) return;
+    fetchPhone({ data: { propertyId: p.id } }).then((r) => setPhone(r.phone)).catch(() => {});
+  }, [user, p.id, fetchPhone]);
   const { data: all = [] } = useQuery(propertiesQuery());
   const similar = all.filter((x) => x.id !== p.id && (x.kind === p.kind || x.listing === p.listing)).slice(0, 3);
 
@@ -169,13 +180,18 @@ function PropertyPage() {
               </div>
             </div>
             <Button size="lg" className="mt-6 w-full" onClick={() => setContactOpen(true)}>
-              <Mail /> Contact agent
+              <Mail /> Schedule a viewing
             </Button>
-            {p.agent.phone && (
+            {phone ? (
               <Button asChild size="lg" variant="outline" className="mt-2 w-full">
-                <a href={`tel:${p.agent.phone.replace(/\s/g, "")}`}><Phone /> {p.agent.phone}</a>
+                <a href={`tel:${phone.replace(/\s/g, "")}`}><Phone /> {phone}</a>
               </Button>
-            )}
+            ) : !user ? (
+              <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
+                <Lock className="mt-0.5 size-3.5 shrink-0" />
+                <span>Phone number is shown after you <Link to="/auth" className="font-medium text-primary hover:underline">sign in</Link> or send an inquiry.</span>
+              </p>
+            ) : null}
           </div>
 
           {p.listing === "buy" && (
@@ -201,7 +217,7 @@ function PropertyPage() {
       )}
 
       <Lightbox property={p} index={lightbox} onIndex={setLightbox} />
-      <ContactDialog property={p} open={contactOpen} onOpenChange={setContactOpen} />
+      <ContactDialog property={p} open={contactOpen} onOpenChange={setContactOpen} onPhone={setPhone} />
     </div>
   );
 }
@@ -269,33 +285,67 @@ function Lightbox({ property: p, index, onIndex }: { property: Property; index: 
   );
 }
 
-function ContactDialog({ property: p, open, onOpenChange }: { property: Property; open: boolean; onOpenChange: (o: boolean) => void }) {
+function ContactDialog({ property: p, open, onOpenChange, onPhone }: { property: Property; open: boolean; onOpenChange: (o: boolean) => void; onPhone: (phone: string | null) => void }) {
+  const send = useServerFn(submitInquiry);
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState<{ phone: string | null } | null>(null);
+  const today = new Date().toISOString().slice(0, 10);
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) setDone(null); }}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-display text-2xl font-medium">Contact {p.agent.name}</DialogTitle>
-          <DialogDescription>About “{p.title}”. The agent usually replies within a day.</DialogDescription>
-        </DialogHeader>
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onOpenChange(false);
-            toast.success("Message sent", { description: `${p.agent.name} will get back to you soon.` });
-          }}
-        >
-          <div className="space-y-1.5"><Label htmlFor="c-name">Full name</Label><Input id="c-name" required /></div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5"><Label htmlFor="c-email">Email</Label><Input id="c-email" type="email" required /></div>
-            <div className="space-y-1.5"><Label htmlFor="c-phone">Phone</Label><Input id="c-phone" type="tel" /></div>
+        {done ? (
+          <div className="py-4 text-center">
+            <CheckCircle2 className="mx-auto size-12 text-primary" />
+            <DialogHeader className="mt-4 sm:text-center">
+              <DialogTitle className="font-display text-2xl font-medium">Inquiry sent</DialogTitle>
+              <DialogDescription>Thank you! {p.agent.name} has received your request about “{p.title}” and will contact you soon.</DialogDescription>
+            </DialogHeader>
+            {done.phone && (
+              <Button asChild variant="outline" size="lg" className="mt-6 w-full">
+                <a href={`tel:${done.phone.replace(/\s/g, "")}`}><Phone /> {done.phone}</a>
+              </Button>
+            )}
+            <Button size="lg" className="mt-2 w-full" onClick={() => onOpenChange(false)}>Done</Button>
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="c-msg">Message</Label>
-            <Textarea id="c-msg" rows={4} required defaultValue={`Hello, I'm interested in ${p.title} and would like to arrange a viewing.`} />
-          </div>
-          <Button type="submit" size="lg" className="w-full">Send message</Button>
-        </form>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle className="font-display text-2xl font-medium">Schedule a viewing</DialogTitle>
+              <DialogDescription>Contact {p.agent.name} about “{p.title}”.</DialogDescription>
+            </DialogHeader>
+            <form
+              className="space-y-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const f = new FormData(e.currentTarget);
+                const v = (k: string) => String(f.get(k) ?? "");
+                setSending(true);
+                try {
+                  const r = await send({ data: { propertyId: p.id, fullName: v("name"), email: v("email"), phone: v("phone"), preferredDate: v("date"), message: v("message") } });
+                  setDone(r);
+                  onPhone(r.phone);
+                } catch {
+                  toast.error("Could not send your inquiry", { description: "Please check your details and try again." });
+                } finally {
+                  setSending(false);
+                }
+              }}
+            >
+              <div className="space-y-1.5"><Label htmlFor="c-name">Full name</Label><Input id="c-name" name="name" required maxLength={100} /></div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5"><Label htmlFor="c-email">Email</Label><Input id="c-email" name="email" type="email" required maxLength={255} /></div>
+                <div className="space-y-1.5"><Label htmlFor="c-phone">Phone</Label><Input id="c-phone" name="phone" type="tel" maxLength={40} /></div>
+              </div>
+              <div className="space-y-1.5"><Label htmlFor="c-date">Preferred date</Label><Input id="c-date" name="date" type="date" min={today} /></div>
+              <div className="space-y-1.5">
+                <Label htmlFor="c-msg">Message</Label>
+                <Textarea id="c-msg" name="message" rows={4} required maxLength={2000} defaultValue={`Hello, I'm interested in ${p.title} and would like to arrange a viewing.`} />
+              </div>
+              <Button type="submit" size="lg" className="w-full" disabled={sending}>{sending ? "Sending…" : "Send inquiry"}</Button>
+            </form>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

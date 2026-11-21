@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrency } from "@/components/site/currency-context";
 import { useAuth } from "@/hooks/use-auth";
+import { AgencyPricing } from "@/components/site/agency-pricing";
 import { supabase } from "@/integrations/supabase/client";
 import { convertToUsd } from "@/lib/currency";
 import { cn } from "@/lib/utils";
@@ -78,6 +79,7 @@ function PostListingPage() {
           </div>
         </div>
       )}
+      <AgencyPricing />
     </>
   );
 }

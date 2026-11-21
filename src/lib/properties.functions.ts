@@ -6,7 +6,9 @@ import type { ListingType, Property, PropertyKind } from "./properties";
 const PHOTOS_BUCKET = "listing-photos";
 const SIGNED_URL_SECONDS = 60 * 60 * 24 * 7;
 
-type Row = Database["public"]["Tables"]["properties"]["Row"];
+// seller_phone is not readable by the public; it is revealed via getSellerPhone / submitInquiry.
+const PUBLIC_COLUMNS = "id, user_id, title, kind, listing_type, country, city, neighborhood, price_usd, size_m2, beds, baths, year_built, description, images, features, seller_name, agency_id, lat, lng, created_at";
+type Row = Omit<Database["public"]["Tables"]["properties"]["Row"], "seller_phone">;
 
 // Public read-only client for SSR: anyone may read listings (RLS: public SELECT).
 function publicClient() {
@@ -62,7 +64,7 @@ async function toProperties(rows: Row[]): Promise<Property[]> {
     description: r.description,
     features: r.features,
     agencyId: r.agency_id ?? undefined,
-    agent: { name: r.seller_name, phone: r.seller_phone ?? undefined },
+    agent: { name: r.seller_name, phone: undefined },
     userId: r.user_id,
   }));
 }
@@ -70,7 +72,7 @@ async function toProperties(rows: Row[]): Promise<Property[]> {
 export const getProperties = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await publicClient()
     .from("properties")
-    .select("*")
+    .select(PUBLIC_COLUMNS)
     .order("created_at", { ascending: false })
     .limit(500);
   if (error) throw new Error(error.message);
@@ -86,7 +88,7 @@ export const getPropertyById = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     if (!UUID.test(data.id)) return null;
-    const { data: row, error } = await publicClient().from("properties").select("*").eq("id", data.id).maybeSingle();
+    const { data: row, error } = await publicClient().from("properties").select(PUBLIC_COLUMNS).eq("id", data.id).maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) return null;
     const [property] = await toProperties([row]);

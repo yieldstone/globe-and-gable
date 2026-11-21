@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mail, MapPin, Phone, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AgencyPricing } from "@/components/site/agency-pricing";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { agencies, img } from "@/lib/properties";
 import { propertiesQuery } from "@/lib/properties.queries";
@@ -29,6 +30,7 @@ function AgenciesPage() {
           <p className="eyebrow text-highlight">Partners</p>
           <h1 className="mt-2 text-4xl font-medium sm:text-5xl">Trusted agencies worldwide</h1>
           <p className="mt-3 max-w-xl text-navy-muted">Local experts who know every street, school and building in their market.</p>
+          <Button asChild variant="hero" className="mt-6"><a href="#pricing">List your agency</a></Button>
         </div>
       </section>
       <div className="mx-auto mt-10 grid max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-2">
@@ -70,6 +72,7 @@ function AgenciesPage() {
           );
         })}
       </div>
+      <AgencyPricing />
     </>
   );
 }
