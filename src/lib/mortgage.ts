@@ -53,3 +53,21 @@ export function calculateMortgage(input: MortgageInput) {
     schedule,
   };
 }
+
+export function calculateRentalRoi(input: {
+  purchasePrice: number;
+  downPayment: number;
+  monthlyRent: number;
+  annualExpenses: number;
+  monthlyMortgage: number;
+}) {
+  const annualRent = Math.max(0, input.monthlyRent) * 12;
+  const netIncome = annualRent - Math.max(0, input.annualExpenses);
+  const annualCashFlow = netIncome - Math.max(0, input.monthlyMortgage) * 12;
+  return {
+    grossYield: input.purchasePrice > 0 ? annualRent / input.purchasePrice * 100 : 0,
+    netYield: input.purchasePrice > 0 ? netIncome / input.purchasePrice * 100 : 0,
+    monthlyCashFlow: annualCashFlow / 12,
+    cashOnCash: input.downPayment > 0 ? annualCashFlow / input.downPayment * 100 : null,
+  };
+}

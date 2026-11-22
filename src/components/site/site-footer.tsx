@@ -30,7 +30,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-navy-border">
         <p className="mx-auto max-w-7xl px-4 py-5 text-xs text-navy-muted sm:px-6">
-          © {new Date().getFullYear()} Atlas Estates. Prices shown in EUR use a fixed reference rate.
+          © {new Date().getFullYear()} Atlas Estates. AED prices use the reference rate of 1 USD = 3.6725 AED.
         </p>
       </div>
     </footer>

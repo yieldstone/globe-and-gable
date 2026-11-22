@@ -16,7 +16,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = window.localStorage.getItem(KEY);
-    if (saved === "USD" || saved === "EUR") setCurrencyState(saved);
+    if (saved === "USD" || saved === "AED") setCurrencyState(saved);
   }, []);
 
   const setCurrency = (c: Currency) => {

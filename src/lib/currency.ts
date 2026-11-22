@@ -1,14 +1,14 @@
-export type Currency = "USD" | "EUR";
+export type Currency = "USD" | "AED";
 
-/** Fixed reference rate: 1 USD = EUR_PER_USD EUR. All listing prices are stored in USD. */
-export const EUR_PER_USD = 0.92;
+/** Fixed reference rate: 1 USD = AED_PER_USD AED. All listing prices are stored in USD. */
+export const AED_PER_USD = 3.6725;
 
 export function convertFromUsd(usd: number, currency: Currency): number {
-  return currency === "EUR" ? usd * EUR_PER_USD : usd;
+  return currency === "AED" ? usd * AED_PER_USD : usd;
 }
 
 export function convertToUsd(amount: number, currency: Currency): number {
-  return currency === "EUR" ? amount / EUR_PER_USD : amount;
+  return currency === "AED" ? amount / AED_PER_USD : amount;
 }
 
 export function formatMoney(amount: number, currency: Currency, opts?: { compact?: boolean }) {

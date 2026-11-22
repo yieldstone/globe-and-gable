@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   ArrowLeft, Bath, BedDouble, Calculator, CalendarDays, Check, ChevronLeft, ChevronRight,
-  Expand, Mail, MapPin, Maximize, Phone, Star,
+  Expand, Mail, MapPin, Maximize, MessageCircle, Phone, Star,
 } from "lucide-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -16,6 +16,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { formatArea } from "@/lib/units";
+import { whatsappLink } from "@/lib/whatsapp";
+import { PropertyCalculator } from "@/components/site/property-calculator";
+import { FeaturedBadge, VerifiedAgentBadge } from "@/components/site/trust-badges";
 import { PropertyCard } from "@/components/site/property-card";
 import { useCurrency } from "@/components/site/currency-context";
 import { getAgency, img, type Property } from "@/lib/properties";
@@ -31,7 +35,7 @@ export const Route = createFileRoute("/properties/$propertyId")({
     if (!loaderData) return { meta: [{ title: "Property not found | Atlas Estates" }, { name: "robots", content: "noindex" }] };
     const p = loaderData.property;
     const title = `${p.title} — ${p.city}, ${p.country} | Atlas Estates`;
-    const description = `${p.kind} ${p.listing === "buy" ? "for sale" : "for rent"} in ${p.neighborhood}, ${p.city}. ${p.beds} bedrooms, ${p.baths} bathrooms, ${p.sizeM2} m².`;
+    const description = `${p.kind} ${p.listing === "buy" ? "for sale" : "for rent"} in ${p.neighborhood}, ${p.city}. ${p.beds} bedrooms, ${p.baths} bathrooms, ${formatArea(p.sizeM2)}.`;
     // Submitted listings use expiring photo links, so only the built-in samples get a share image.
     const image = p.userId ? null : img(p.images[0], 1200, 630);
     return {
@@ -66,9 +70,20 @@ function PropertyPage() {
   const { user } = useAuth();
   const fetchPhone = useServerFn(getSellerPhone);
   const [phone, setPhone] = useState<string | null>(null);
+  const [inquiryPhone, setInquiryPhone] = useState<string | null>(null);
+  const [propertyUrl, setPropertyUrl] = useState("");
+  useEffect(() => {
+    setPropertyUrl(`${window.location.origin}/properties/${p.id}`);
+    setInquiryPhone(null);
+    setPhone(null);
+  }, [p.id]);
+  const visiblePhone = inquiryPhone ?? (user ? phone : null);
+  const whatsapp = propertyUrl ? whatsappLink(visiblePhone, p.title, propertyUrl) : null;
   useEffect(() => {
     if (!user) return;
-    fetchPhone({ data: { propertyId: p.id } }).then((r) => setPhone(r.phone)).catch(() => {});
+    let active = true;
+    fetchPhone({ data: { propertyId: p.id } }).then((r) => { if (active) setPhone(r.phone); }).catch(() => {});
+    return () => { active = false; };
   }, [user, p.id, fetchPhone]);
   const { data: all = [] } = useQuery(propertiesQuery());
   const similar = all.filter((x) => x.id !== p.id && (x.kind === p.kind || x.listing === p.listing)).slice(0, 3);
@@ -93,6 +108,7 @@ function PropertyPage() {
           <div className="flex gap-2">
             <Badge variant={p.listing === "buy" ? "default" : "highlight"}>{p.listing === "buy" ? "For sale" : "For rent"}</Badge>
             <Badge variant="secondary">{p.kind}</Badge>
+            {p.featured && <FeaturedBadge />}
           </div>
           <h1 className="mt-3 text-3xl font-medium sm:text-5xl">{p.title}</h1>
           <p className="mt-2 flex items-center gap-1.5 text-muted-foreground">
@@ -113,7 +129,7 @@ function PropertyPage() {
             {[
               { icon: BedDouble, label: "Bedrooms", value: p.beds },
               { icon: Bath, label: "Bathrooms", value: p.baths },
-              { icon: Maximize, label: "Living area", value: `${p.sizeM2} m²` },
+              { icon: Maximize, label: "Living area", value: `${formatArea(p.sizeM2)}` },
               { icon: CalendarDays, label: "Year built", value: p.yearBuilt || "—" },
             ].map((s) => (
               <div key={s.label} className="rounded-xl border bg-card p-4">
@@ -140,6 +156,8 @@ function PropertyPage() {
               </ul>
             </>
           )}
+
+          {p.listing === "buy" && <PropertyCalculator key={p.id} purchasePrice={p.priceUsd} />}
 
           <h2 className="mt-10 text-2xl font-medium">Location</h2>
           <p className="mt-1 text-sm text-muted-foreground">{p.neighborhood}, {p.city}</p>
@@ -171,6 +189,7 @@ function PropertyPage() {
               </span>
               <div>
                 <p className="font-semibold">{p.agent.name}</p>
+                {p.verifiedAgent && <div className="mt-1"><VerifiedAgentBadge /></div>}
                 {!agency && <p className="text-sm text-muted-foreground">Private seller</p>}
                 {agency && (
                   <p className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -182,9 +201,15 @@ function PropertyPage() {
             <Button size="lg" className="mt-6 w-full" onClick={() => setContactOpen(true)}>
               <Mail /> Schedule a viewing
             </Button>
-            {phone ? (
+            {whatsapp ? (
+              <Button asChild variant="whatsapp" size="lg" className="mt-2 w-full"><a href={whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle />WhatsApp Agent</a></Button>
+            ) : (
+              <Button variant="whatsapp" size="lg" className="mt-2 w-full" onClick={() => setContactOpen(true)}><MessageCircle />WhatsApp Agent</Button>
+            )}
+            {!whatsapp && visiblePhone && <p className="mt-2 text-xs text-muted-foreground">WhatsApp requires an international phone number. Please contact the agent by inquiry or phone.</p>}
+            {visiblePhone ? (
               <Button asChild size="lg" variant="outline" className="mt-2 w-full">
-                <a href={`tel:${phone.replace(/\s/g, "")}`}><Phone /> {phone}</a>
+                <a href={`tel:${visiblePhone.replace(/\s/g, "")}`}><Phone /> {visiblePhone}</a>
               </Button>
             ) : !user ? (
               <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
@@ -217,7 +242,7 @@ function PropertyPage() {
       )}
 
       <Lightbox property={p} index={lightbox} onIndex={setLightbox} />
-      <ContactDialog property={p} open={contactOpen} onOpenChange={setContactOpen} onPhone={setPhone} />
+      <ContactDialog property={p} open={contactOpen} onOpenChange={setContactOpen} onPhone={setInquiryPhone} />
     </div>
   );
 }

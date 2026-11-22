@@ -87,6 +87,32 @@ export type Database = {
           },
         ]
       }
+      listing_status: {
+        Row: {
+          featured: boolean
+          property_id: string
+          verified_agent: boolean
+        }
+        Insert: {
+          featured?: boolean
+          property_id: string
+          verified_agent?: boolean
+        }
+        Update: {
+          featured?: boolean
+          property_id?: string
+          verified_agent?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_status_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
           baths: number

@@ -30,7 +30,7 @@ export const Route = createFileRoute("/mortgage-calculator")({
 function MortgagePage() {
   const { price: fromSearch } = Route.useSearch();
   const { currency, price } = useCurrency();
-  const symbol = currency === "EUR" ? "€" : "$";
+  const symbol = currency === "AED" ? "AED" : "$";
 
   const [homePriceUsd, setHomePriceUsd] = useState(fromSearch ?? 650_000);
   const [downPct, setDownPct] = useState(20);

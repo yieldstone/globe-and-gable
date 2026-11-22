@@ -1,5 +1,12 @@
 # Roadmap
 
+- [x] USD/AED prices and square-foot sizes throughout the marketplace
+- [x] Protected trust labels and Featured-first search ordering
+- [ ] Assign Verified Agent and Featured statuses (waiting for user to identify eligible agents/listings)
+- [x] Privacy-preserving WhatsApp property contact (verified after saved inquiry)
+- [x] USA/Dubai/Abu Dhabi, property type, bedroom and amenity filters
+- [x] Interactive property mortgage and ROI estimates; 29 tests and mobile checks passed
+
 - [x] Global real estate site (home search, properties, detail, mortgage, post listing, agencies, USD/EUR)
 - [x] Post a Listing: active Sell / Rent out button text pure white
 - [x] Lovable Cloud database + photo storage; submitted listings and photos saved and visible to everyone

@@ -45,7 +45,13 @@ async function toProperties(rows: Row[]): Promise<Property[]> {
     }
   }
 
+  const { data: statuses, error: statusError } = await publicClient().from("listing_status").select("property_id, featured, verified_agent").in("property_id", rows.map((r) => r.id));
+  if (statusError) throw new Error(statusError.message);
+  const statusFor = new Map((statuses ?? []).map((s) => [s.property_id, s]));
+
   return rows.map((r) => ({
+    featured: statusFor.get(r.id)?.featured ?? false,
+    verifiedAgent: statusFor.get(r.id)?.verified_agent ?? false,
     id: r.id,
     title: r.title,
     kind: r.kind as PropertyKind,

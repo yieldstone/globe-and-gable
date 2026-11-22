@@ -29,6 +29,20 @@
       "when": 1795291596301,
       "tag": "0003_inquiries_and_phone_privacy",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795342058164,
+      "tag": "0004_marketplace_luxury_status",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795342239386,
+      "tag": "0005_restrict_listing_status_writes",
+      "breakpoints": true
     }
   ]
 }

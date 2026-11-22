@@ -12,6 +12,8 @@ import { useCurrency } from "@/components/site/currency-context";
 import { useAuth } from "@/hooks/use-auth";
 import { AgencyPricing } from "@/components/site/agency-pricing";
 import { supabase } from "@/integrations/supabase/client";
+import { toSquareMeters } from "@/lib/units";
+import { AMENITIES, type Amenity } from "@/lib/properties";
 import { convertToUsd } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 
@@ -92,6 +94,7 @@ function ListingForm({ userId }: { userId: string }) {
   const [kind, setKind] = useState("Apartment");
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [saving, setSaving] = useState(false);
+  const [amenities, setAmenities] = useState<Amenity[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const photosRef = useRef(photos);
   photosRef.current = photos;
@@ -130,7 +133,8 @@ function ListingForm({ userId }: { userId: string }) {
         city: str("city"),
         neighborhood: neighborhood || null,
         price_usd: Math.round(convertToUsd(Number(str("price")), currency)),
-        size_m2: Number(str("size")),
+        size_m2: Math.max(1, Math.round(toSquareMeters(Number(str("size"))))),
+        features: amenities,
         beds: Number(str("beds")),
         baths: Number(str("baths")),
         year_built: num("year"),
@@ -189,6 +193,8 @@ function ListingForm({ userId }: { userId: string }) {
                 <SelectItem value="Apartment">Apartment</SelectItem>
                 <SelectItem value="House">House</SelectItem>
                 <SelectItem value="Villa">Villa</SelectItem>
+                <SelectItem value="Penthouse">Penthouse</SelectItem>
+                <SelectItem value="Townhouse">Townhouse</SelectItem>
               </SelectContent>
             </Select>
           </F>
@@ -201,12 +207,16 @@ function ListingForm({ userId }: { userId: string }) {
       <Section title="Details">
         <F label="Listing title" htmlFor="title"><Input id="title" name="title" required minLength={3} maxLength={120} placeholder="Bright 2-bedroom apartment with balcony" /></F>
         <div className="grid gap-4 sm:grid-cols-4">
-          <F label="Size (m²)" htmlFor="size"><Input id="size" name="size" type="number" min={1} max={99999} required /></F>
+          <F label="Size (sq ft)" htmlFor="size"><Input id="size" name="size" type="number" min={1} max={1076380} required /></F>
           <F label="Bedrooms" htmlFor="beds"><Input id="beds" name="beds" type="number" min={0} max={100} required /></F>
           <F label="Bathrooms" htmlFor="baths"><Input id="baths" name="baths" type="number" min={0} max={100} required /></F>
           <F label="Year built" htmlFor="year"><Input id="year" name="year" type="number" min={1500} max={2100} /></F>
         </div>
         <F label="Description" htmlFor="desc"><Textarea id="desc" name="desc" rows={5} required minLength={10} maxLength={5000} placeholder="Describe the home, neighborhood and what makes it special." /></F>
+      </Section>
+
+      <Section title="Amenities">
+        <div className="flex flex-wrap gap-2">{AMENITIES.map((a) => <Button key={a} type="button" variant={amenities.includes(a) ? "default" : "outline"} aria-pressed={amenities.includes(a)} onClick={() => setAmenities((prev) => prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a])}>{a}</Button>)}</div>
       </Section>
 
       <Section title="Location">
@@ -262,7 +272,7 @@ function ListingForm({ userId }: { userId: string }) {
       <Section title="Contact shown on your listing">
         <div className="grid gap-4 sm:grid-cols-2">
           <F label="Name" htmlFor="name"><Input id="name" name="name" required maxLength={80} /></F>
-          <F label="Phone (optional, shown publicly)" htmlFor="phone"><Input id="phone" name="phone" type="tel" maxLength={40} /></F>
+          <F label="Phone (international format, e.g. +971…)" htmlFor="phone"><Input id="phone" name="phone" type="tel" maxLength={40} /></F>
         </div>
       </Section>
 

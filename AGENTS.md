@@ -37,3 +37,8 @@ use the editor.
 - The legacy `listings` / `listing_contacts` tables are deprecated and unused; never read or write them.
 - Property filters live in URL search params on `/properties` (parsed by `parseFilters`) so searches are shareable; the home page keeps them in local state and hands them off on "View all".
 - Mortgage math lives in `src/lib/mortgage.ts` (pure, unit-tested) so the calculator page stays presentational.
+- Trust and promotional status comes only from the platform-managed `listing_status` table; listing owners have read-only access so they cannot self-verify or self-promote.
+- Keep area storage in square meters and price storage in USD; convert only at display and form boundaries so switching units or currency never rewrites listing data.
+- Sort with `sortProperties` on both home and search; its Featured-first priority must apply before any secondary sort.
+- Property-level financial estimates reuse pure mortgage and rental ROI functions; ROI uses user-entered rental income and operating costs rather than invented market returns.
+- WhatsApp links use only phone numbers already revealed by sign-in or inquiry; missing or non-international numbers fall back to inquiry so public links cannot leak private contact details.

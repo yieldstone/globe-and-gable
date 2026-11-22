@@ -5,7 +5,7 @@ import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { filterProperties, parseFilters, type PropertyFilters } from "@/lib/properties";
+import { filterProperties, parseFilters, sortProperties, type PropertySort, type PropertyFilters } from "@/lib/properties";
 import { propertiesQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/properties/")({
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/properties/")({
   component: PropertiesPage,
 });
 
-type Sort = "featured" | "price-asc" | "price-desc" | "size-desc";
+type Sort = PropertySort;
 
 function PropertiesPage() {
   const filters = Route.useSearch();
@@ -33,11 +33,7 @@ function PropertiesPage() {
   const { data: properties } = useSuspenseQuery(propertiesQuery());
 
   const results = useMemo(() => {
-    const list = filterProperties(properties, filters);
-    if (sort === "price-asc") return [...list].sort((a, b) => a.priceUsd - b.priceUsd);
-    if (sort === "price-desc") return [...list].sort((a, b) => b.priceUsd - a.priceUsd);
-    if (sort === "size-desc") return [...list].sort((a, b) => b.sizeM2 - a.sizeM2);
-    return list;
+    return sortProperties(filterProperties(properties, filters), sort);
   }, [properties, filters, sort]);
 
   const title =
@@ -50,7 +46,7 @@ function PropertiesPage() {
           <p className="eyebrow text-highlight">Search</p>
           <h1 className="mt-2 text-4xl font-medium sm:text-5xl">
             {title}
-            {filters.city ? ` in ${filters.city}` : filters.country ? ` in ${filters.country}` : " worldwide"}
+            {filters.city ? ` in ${filters.city}` : filters.country ? ` in ${filters.country}` : filters.region ? ` in ${filters.region}` : " worldwide"}
           </h1>
         </div>
       </section>

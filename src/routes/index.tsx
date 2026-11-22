@@ -6,14 +6,14 @@ import heroImg from "@/assets/hero-city.jpg";
 import { Button } from "@/components/ui/button";
 import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
-import { agencies, countriesIn, filterProperties, type PropertyFilters } from "@/lib/properties";
+import { agencies, countriesIn, filterProperties, sortProperties, type PropertyFilters } from "@/lib/properties";
 import { propertiesQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Atlas Estates — Homes for sale and rent worldwide" },
-      { name: "description", content: "Search apartments, houses and villas across New York, Paris, Dubai, Bali, Sydney and more. Prices in USD or EUR." },
+      { name: "description", content: "Search apartments, houses and villas across New York, Paris, Dubai, Bali, Sydney and more. Prices in USD or AED." },
       { property: "og:title", content: "Atlas Estates — Homes for sale and rent worldwide" },
       { property: "og:description", content: "Search apartments, houses and villas across the world's most loved cities." },
       { property: "og:type", content: "website" },
@@ -29,7 +29,7 @@ function Index() {
   const navigate = useNavigate();
   const { data: properties } = useSuspenseQuery(propertiesQuery());
   const countries = countriesIn(properties);
-  const results = useMemo(() => filterProperties(properties, filters), [properties, filters]);
+  const results = useMemo(() => sortProperties(filterProperties(properties, filters)), [properties, filters]);
 
   return (
     <>
@@ -89,7 +89,7 @@ function Index() {
       <section className="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div className="grid gap-6 md:grid-cols-3">
           {[
-            { icon: Globe2, title: "Truly global", text: `Listings across ${countries.length} countries, shown in USD or EUR.` },
+            { icon: Globe2, title: "Truly global", text: `Listings across ${countries.length} countries, shown in USD or AED.` },
             { icon: ShieldCheck, title: "Verified agencies", text: `${agencies.length} trusted partner agencies, rated by buyers and tenants.` },
             { icon: Building2, title: "Every kind of home", text: "City apartments, family houses and luxury villas — to buy or to rent." },
           ].map((f) => (

@@ -27,9 +27,9 @@ describe("mortgage", () => {
 });
 
 describe("currency", () => {
-  it("converts USD to EUR at the fixed 0.92 rate and back", () => {
-    expect(convertFromUsd(1000, "EUR")).toBeCloseTo(920);
-    expect(convertToUsd(920, "EUR")).toBeCloseTo(1000);
+  it("converts USD to AED at the fixed 3.6725 rate and back", () => {
+    expect(convertFromUsd(1000, "AED")).toBeCloseTo(3672.5);
+    expect(convertToUsd(3672.5, "AED")).toBeCloseTo(1000);
     expect(convertFromUsd(1000, "USD")).toBe(1000);
   });
 });

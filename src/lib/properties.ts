@@ -1,5 +1,5 @@
 export type ListingType = "buy" | "rent";
-export type PropertyKind = "Apartment" | "House" | "Villa";
+export type PropertyKind = "Apartment" | "House" | "Villa" | "Penthouse" | "Townhouse";
 
 export interface Agency {
   id: string;
@@ -37,6 +37,8 @@ export interface Property {
   agent: { name: string; phone?: string | undefined; email?: string | undefined };
   /** Owner account for listings posted by users; null for partner-agency samples. */
   userId: string | null;
+  featured?: boolean;
+  verifiedAgent?: boolean;
 }
 
 /** Accepts a complete image URL (as stored in the database) or a bare Unsplash photo id. */
@@ -69,7 +71,15 @@ export function getAgency(id: string) {
   return agencies.find((a) => a.id === id);
 }
 
+export const REGIONS = ["USA", "Dubai", "Abu Dhabi"] as const;
+export type Region = (typeof REGIONS)[number];
+export const AMENITIES = ["Pool", "Sea View", "Gym", "Furnished"] as const;
+export type Amenity = (typeof AMENITIES)[number];
+
 export interface PropertyFilters {
+  region?: Region | undefined;
+  bedrooms?: number | undefined;
+  amenities?: Amenity[] | undefined;
   country?: string | undefined;
   city?: string | undefined;
   type?: ListingType | undefined;
@@ -82,6 +92,9 @@ export interface PropertyFilters {
 export function filterProperties(list: Property[], f: PropertyFilters) {
   return list.filter(
     (p) =>
+      (!f.region || regionFor(p) === f.region) &&
+      (f.bedrooms == null || p.beds >= f.bedrooms) &&
+      (!f.amenities?.length || f.amenities.every((a) => hasAmenity(p, a))) &&
       (!f.country || p.country === f.country) &&
       (!f.city || p.city === f.city) &&
       (!f.type || p.listing === f.type) &&
@@ -101,10 +114,13 @@ const str = (v: unknown) => (typeof v === "string" && v.trim() ? v : undefined);
 export function parseFilters(search: Record<string, unknown>): PropertyFilters {
   const type = search["type"] === "buy" || search["type"] === "rent" ? search["type"] : undefined;
   const kind =
-    search["kind"] === "Apartment" || search["kind"] === "House" || search["kind"] === "Villa"
-      ? search["kind"]
+    ["Apartment", "House", "Villa", "Penthouse", "Townhouse"].includes(String(search["kind"]))
+      ? search["kind"] as PropertyKind
       : undefined;
   return {
+    region: REGIONS.find((r) => r === search["region"]),
+    bedrooms: num(search["bedrooms"]),
+    amenities: AMENITIES.filter((a) => (Array.isArray(search["amenities"]) ? search["amenities"] : String(search["amenities"] ?? "").split(",")).includes(a)),
     country: str(search["country"]),
     city: str(search["city"]),
     type,
@@ -113,4 +129,34 @@ export function parseFilters(search: Record<string, unknown>): PropertyFilters {
     maxPrice: num(search["maxPrice"]),
     minSize: num(search["minSize"]),
   };
+}
+
+
+export function regionFor(p: Pick<Property, "country" | "city">): Region | undefined {
+  if (["united states", "united states of america", "usa", "us"].includes(p.country.trim().toLowerCase())) return "USA";
+  if (!["united arab emirates", "uae"].includes(p.country.trim().toLowerCase())) return undefined;
+  const city = p.city.trim().toLowerCase();
+  return city === "dubai" ? "Dubai" : city === "abu dhabi" ? "Abu Dhabi" : undefined;
+}
+
+export function hasAmenity(p: Pick<Property, "features">, amenity: Amenity) {
+  const patterns: Record<Amenity, RegExp> = {
+    Pool: /\bpool\b/i,
+    "Sea View": /\b(sea|ocean) views?\b/i,
+    Gym: /\b(gym|fitness cent(er|re))\b/i,
+    Furnished: /\b(furnished)\b/i,
+  };
+  return p.features.some((f) => !/\b(no|not|unfurnished)\b/i.test(f) && patterns[amenity].test(f));
+}
+
+export type PropertySort = "featured" | "price-asc" | "price-desc" | "size-desc";
+export function sortProperties(list: Property[], sort: PropertySort = "featured") {
+  return [...list].sort((a, b) => {
+    const priority = Number(Boolean(b.featured)) - Number(Boolean(a.featured));
+    if (priority) return priority;
+    if (sort === "price-asc") return a.priceUsd - b.priceUsd;
+    if (sort === "price-desc") return b.priceUsd - a.priceUsd;
+    if (sort === "size-desc") return b.sizeM2 - a.sizeM2;
+    return 0;
+  });
 }

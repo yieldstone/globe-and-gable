@@ -32,11 +32,11 @@ const languages = [
 
 export function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2.5">
+    <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5">
       <span className="grid size-9 place-items-center rounded-lg bg-highlight font-display text-lg font-semibold text-highlight-foreground">
         A
       </span>
-      <span className="font-display text-xl font-semibold tracking-tight">
+      <span className="font-display text-base font-semibold sm:text-xl">
         Atlas<span className="text-highlight">Estates</span>
       </span>
     </Link>
@@ -47,7 +47,7 @@ function LocaleSwitcher() {
   const { currency, setCurrency } = useCurrency();
   const currencies: { code: Currency; label: string }[] = [
     { code: "USD", label: "US Dollar ($)" },
-    { code: "EUR", label: "Euro (€)" },
+    { code: "AED", label: "UAE Dirham (AED)" },
   ];
   return (
     <DropdownMenu>
@@ -85,7 +85,7 @@ function AccountMenu() {
   if (!user) {
     return (
       <Button asChild variant="on-navy" size="sm">
-        <Link to="/auth" search={{ redirect: undefined, mode: undefined }}>Sign in</Link>
+        <Link to="/auth" search={{ redirect: undefined, mode: undefined }} aria-label="Sign in"><UserRound className="sm:hidden" /><span className="hidden sm:inline">Sign in</span></Link>
       </Button>
     );
   }
@@ -123,7 +123,7 @@ export function SiteHeader() {
   const { user } = useAuth();
   return (
     <header className="sticky top-0 z-40 border-b border-navy-border bg-navy/95 text-navy-foreground backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-6 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-1 lg:flex">
           {nav.map((n) => (
