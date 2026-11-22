@@ -8,8 +8,7 @@ export function SiteFooter() {
         <div className="md:col-span-2">
           <Logo />
           <p className="mt-4 max-w-sm text-sm text-navy-muted">
-            Homes, villas and apartments for sale and rent in 10+ countries — with trusted local
-            agencies in every market.
+            Luxury homes, villas and apartments for sale and rent across the USA, Dubai and Abu Dhabi.
           </p>
         </div>
         <div>
@@ -30,7 +29,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-navy-border">
         <p className="mx-auto max-w-7xl px-4 py-5 text-xs text-navy-muted sm:px-6">
-          © {new Date().getFullYear()} Atlas Estates. AED prices use the reference rate of 1 USD = 3.6725 AED.
+          © {new Date().getFullYear()} Globe And Gable. AED prices use the reference rate of 1 USD = 3.6725 AED.
         </p>
       </div>
     </footer>

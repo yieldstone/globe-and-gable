@@ -7,10 +7,10 @@ import { getMyInquiries, type MyInquiry } from "@/lib/inquiries.functions";
 export const Route = createFileRoute("/_authenticated/my-inquiries")({
   head: () => ({
     meta: [
-      { title: "My Inquiries — Atlas Estates" },
-      { name: "description", content: "Viewing requests and messages sent on your Atlas Estates listings." },
-      { property: "og:title", content: "My Inquiries — Atlas Estates" },
-      { property: "og:description", content: "Viewing requests and messages sent on your Atlas Estates listings." },
+      { title: "My Inquiries — Globe And Gable" },
+      { name: "description", content: "Viewing requests and messages sent on your Globe And Gable listings." },
+      { property: "og:title", content: "My Inquiries — Globe And Gable" },
+      { property: "og:description", content: "Viewing requests and messages sent on your Globe And Gable listings." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },

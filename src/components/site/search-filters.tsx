@@ -43,7 +43,7 @@ export function SearchFilters({ value, onChange, onSubmit, submitLabel = "Search
         <Field label="Region">
           <Select value={value.region ?? ANY} onValueChange={(v) => set({ region: REGIONS.find((r) => r === v), country: undefined, city: undefined })}>
             <SelectTrigger className="w-full" aria-label="Region"><SelectValue /></SelectTrigger>
-            <SelectContent><SelectItem value={ANY}>Worldwide</SelectItem>{REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+            <SelectContent><SelectItem value={ANY}>All markets</SelectItem>{REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
           </Select>
         </Field>
         <Field label="Country">

@@ -17,9 +17,9 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
-      { title: "Sign in or create an account | Atlas Estates" },
-      { name: "description", content: "Log in or sign up to post and manage your property listings on Atlas Estates." },
-      { property: "og:title", content: "Sign in | Atlas Estates" },
+      { title: "Sign in or create an account | Globe And Gable" },
+      { name: "description", content: "Log in or sign up to post and manage your property listings on Globe And Gable." },
+      { property: "og:title", content: "Sign in | Globe And Gable" },
       { property: "og:description", content: "Log in or create a free account to post listings." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -74,7 +74,7 @@ function AuthPage() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-16">
-      <h1 className="text-center text-4xl font-medium">Your Atlas account</h1>
+      <h1 className="text-center text-4xl font-medium">Your Globe And Gable account</h1>
       <p className="mt-2 text-center text-muted-foreground">Sign in to post and manage your listings.</p>
 
       <div className="mt-8 rounded-2xl border bg-card p-6 shadow-card">

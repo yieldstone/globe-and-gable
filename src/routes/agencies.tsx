@@ -9,10 +9,10 @@ import { propertiesQuery } from "@/lib/properties.queries";
 export const Route = createFileRoute("/agencies")({
   head: () => ({
     meta: [
-      { title: "Real estate agencies worldwide | Atlas Estates" },
-      { name: "description", content: "Meet our partner agencies in New York, London, Paris, Marbella, Dubai, Sydney and Zermatt." },
-      { property: "og:title", content: "Partner real estate agencies | Atlas Estates" },
-      { property: "og:description", content: "Trusted local agencies in every market we cover." },
+      { title: "Real estate agencies in the USA, Dubai & Abu Dhabi | Globe And Gable" },
+      { name: "description", content: "Meet our partner agencies serving New York, Miami, Los Angeles, Dubai and Abu Dhabi." },
+      { property: "og:title", content: "Partner real estate agencies | Globe And Gable" },
+      { property: "og:description", content: "Local real estate agencies serving the USA, Dubai and Abu Dhabi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -28,7 +28,7 @@ function AgenciesPage() {
       <section className="bg-navy pb-16 pt-12 text-navy-foreground">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <p className="eyebrow text-highlight">Partners</p>
-          <h1 className="mt-2 text-4xl font-medium sm:text-5xl">Trusted agencies worldwide</h1>
+          <h1 className="mt-2 text-4xl font-medium sm:text-5xl">Agencies across the USA, Dubai & Abu Dhabi</h1>
           <p className="mt-3 max-w-xl text-navy-muted">Local experts who know every street, school and building in their market.</p>
           <Button asChild variant="hero" className="mt-6"><a href="#pricing">List your agency</a></Button>
         </div>

@@ -12,10 +12,10 @@ export const Route = createFileRoute("/properties/")({
   validateSearch: (search: Record<string, unknown>): PropertyFilters => parseFilters(search),
   head: () => ({
     meta: [
-      { title: "Properties for sale and rent worldwide | Atlas Estates" },
-      { name: "description", content: "Browse apartments, houses and villas worldwide. Filter by country, city, buy or rent, price and size." },
-      { property: "og:title", content: "Properties for sale and rent worldwide | Atlas Estates" },
-      { property: "og:description", content: "Filter global listings by country, city, price and size." },
+      { title: "Luxury properties in the USA, Dubai & Abu Dhabi | Globe And Gable" },
+      { name: "description", content: "Browse luxury apartments, penthouses, townhouses and villas in the USA, Dubai and Abu Dhabi. Filter by country, city, buy or rent, price and size." },
+      { property: "og:title", content: "Luxury properties in the USA, Dubai & Abu Dhabi | Globe And Gable" },
+      { property: "og:description", content: "Search luxury listings across the USA, Dubai and Abu Dhabi by price, bedrooms and amenities." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -46,7 +46,7 @@ function PropertiesPage() {
           <p className="eyebrow text-highlight">Search</p>
           <h1 className="mt-2 text-4xl font-medium sm:text-5xl">
             {title}
-            {filters.city ? ` in ${filters.city}` : filters.country ? ` in ${filters.country}` : filters.region ? ` in ${filters.region}` : " worldwide"}
+            {filters.city ? ` in ${filters.city}` : filters.country ? ` in ${filters.country}` : filters.region ? ` in ${filters.region}` : " in the USA, Dubai & Abu Dhabi"}
           </h1>
         </div>
       </section>

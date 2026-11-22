@@ -32,9 +32,9 @@ export const Route = createFileRoute("/properties/$propertyId")({
     return { property };
   },
   head: ({ loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Property not found | Atlas Estates" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData) return { meta: [{ title: "Property not found | Globe And Gable" }, { name: "robots", content: "noindex" }] };
     const p = loaderData.property;
-    const title = `${p.title} — ${p.city}, ${p.country} | Atlas Estates`;
+    const title = `${p.title} — ${p.city}, ${p.country} | Globe And Gable`;
     const description = `${p.kind} ${p.listing === "buy" ? "for sale" : "for rent"} in ${p.neighborhood}, ${p.city}. ${p.beds} bedrooms, ${p.baths} bathrooms, ${formatArea(p.sizeM2)}.`;
     // Submitted listings use expiring photo links, so only the built-in samples get a share image.
     const image = p.userId ? null : img(p.images[0], 1200, 630);

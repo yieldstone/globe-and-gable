@@ -34,10 +34,10 @@ export function Logo() {
   return (
     <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5">
       <span className="grid size-9 place-items-center rounded-lg bg-highlight font-display text-lg font-semibold text-highlight-foreground">
-        A
+        G
       </span>
-      <span className="font-display text-base font-semibold sm:text-xl">
-        Atlas<span className="text-highlight">Estates</span>
+      <span className="font-display text-sm font-semibold sm:text-lg">
+        Globe <span className="block text-highlight sm:inline">And Gable</span>
       </span>
     </Link>
   );
@@ -125,7 +125,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-navy-border bg-navy/95 text-navy-foreground backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-6 sm:px-6">
         <Logo />
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1 xl:flex">
           {nav.map((n) => (
             <Link
               key={n.to}
@@ -145,7 +145,7 @@ export function SiteHeader() {
           </Button>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="on-navy" size="icon" className="lg:hidden" aria-label="Open menu">
+              <Button variant="on-navy" size="icon" className="xl:hidden" aria-label="Open menu">
                 <Menu />
               </Button>
             </SheetTrigger>

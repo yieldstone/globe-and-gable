@@ -43,3 +43,5 @@ use the editor.
 - Property-level financial estimates reuse pure mortgage and rental ROI functions; ROI uses user-entered rental income and operating costs rather than invented market returns.
 - WhatsApp links use only phone numbers already revealed by sign-in or inquiry; missing or non-international numbers fall back to inquiry so public links cannot leak private contact details.
 - Keep app-wide auth and currency context identities stable across hot reloads so newly evaluated consumers still match already-mounted providers.
+- Replace seeded sample rows in place using their IDs and `user_id IS NULL`; this preserves existing detail links and inquiries without modifying user-owned homes.
+- Keep live marketplace checks in `tests/target_markets_check.py`; public-page browser checks validate persisted sample locations rather than duplicated test fixtures.

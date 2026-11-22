@@ -16,9 +16,9 @@ export const Route = createFileRoute("/mortgage-calculator")({
   },
   head: () => ({
     meta: [
-      { title: "Mortgage Calculator — Estimate your monthly payment | Atlas Estates" },
+      { title: "Mortgage Calculator — Estimate your monthly payment | Globe And Gable" },
       { name: "description", content: "Calculate your monthly mortgage payment with down payment, interest rate, loan term, property tax and insurance." },
-      { property: "og:title", content: "Mortgage Calculator | Atlas Estates" },
+      { property: "og:title", content: "Mortgage Calculator | Globe And Gable" },
       { property: "og:description", content: "Estimate monthly payments, total interest and your loan balance over time." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

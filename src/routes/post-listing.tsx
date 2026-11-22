@@ -20,10 +20,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/post-listing")({
   head: () => ({
     meta: [
-      { title: "Post a property listing | Atlas Estates" },
-      { name: "description", content: "List your apartment, house or villa for sale or rent and reach buyers and tenants worldwide." },
-      { property: "og:title", content: "Post a property listing | Atlas Estates" },
-      { property: "og:description", content: "Reach buyers and tenants worldwide in a few minutes." },
+      { title: "Post a property listing | Globe And Gable" },
+      { name: "description", content: "List your apartment, house or villa for sale or rent and reach buyers and tenants across the USA, Dubai and Abu Dhabi." },
+      { property: "og:title", content: "Post a property listing | Globe And Gable" },
+      { property: "og:description", content: "Reach buyers and tenants across the USA, Dubai and Abu Dhabi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -61,7 +61,7 @@ function PostListingPage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <p className="eyebrow text-highlight">For owners & agents</p>
           <h1 className="mt-2 text-4xl font-medium sm:text-5xl">Post a listing</h1>
-          <p className="mt-3 max-w-xl text-navy-muted">Reach buyers and tenants in more than 10 countries.</p>
+          <p className="mt-3 max-w-xl text-navy-muted">Reach buyers and tenants across the USA, Dubai and Abu Dhabi.</p>
         </div>
       </section>
       {loading ? (

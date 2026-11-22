@@ -6,16 +6,16 @@ import heroImg from "@/assets/hero-city.jpg";
 import { Button } from "@/components/ui/button";
 import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
-import { agencies, countriesIn, filterProperties, sortProperties, type PropertyFilters } from "@/lib/properties";
+import { agencies, filterProperties, sortProperties, type PropertyFilters } from "@/lib/properties";
 import { propertiesQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Atlas Estates — Homes for sale and rent worldwide" },
-      { name: "description", content: "Search apartments, houses and villas across New York, Paris, Dubai, Bali, Sydney and more. Prices in USD or AED." },
-      { property: "og:title", content: "Atlas Estates — Homes for sale and rent worldwide" },
-      { property: "og:description", content: "Search apartments, houses and villas across the world's most loved cities." },
+      { title: "Globe And Gable — Luxury homes in the USA, Dubai & Abu Dhabi" },
+      { name: "description", content: "Explore luxury villas, penthouses, apartments and townhouses for sale and rent across the USA, Dubai and Abu Dhabi. Prices in USD or AED." },
+      { property: "og:title", content: "Globe And Gable — Luxury homes in the USA, Dubai & Abu Dhabi" },
+      { property: "og:description", content: "Discover luxury real estate across the USA, Dubai and Abu Dhabi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -28,7 +28,6 @@ function Index() {
   const [filters, setFilters] = useState<PropertyFilters>({});
   const navigate = useNavigate();
   const { data: properties } = useSuspenseQuery(propertiesQuery());
-  const countries = countriesIn(properties);
   const results = useMemo(() => sortProperties(filterProperties(properties, filters)), [properties, filters]);
 
   return (
@@ -37,13 +36,13 @@ function Index() {
         <img src={heroImg} alt="" width={1920} height={1088} className="absolute inset-0 -z-20 size-full object-cover" />
         <div className="absolute inset-0 -z-10 bg-hero-overlay" />
         <div className="mx-auto max-w-7xl px-4 pb-40 pt-20 sm:px-6 sm:pt-28">
-          <p className="eyebrow text-highlight">{countries.length} countries · {properties.length} curated listings</p>
+          <p className="eyebrow text-highlight">3 target markets · {properties.length} curated listings</p>
           <h1 className="mt-4 max-w-3xl text-4xl font-medium leading-[1.05] sm:text-6xl">
-            Find your place, anywhere in the world.
+            Globe And Gable
           </h1>
           <p className="mt-5 max-w-xl text-lg text-navy-muted">
-            Apartments, family houses and villas for sale and rent — from Manhattan penthouses to
-            tropical retreats in Bali.
+            Luxury real estate across the USA, Dubai and Abu Dhabi — from Manhattan penthouses
+            to waterfront villas on Palm Jumeirah and Saadiyat Island.
           </p>
         </div>
       </section>
@@ -61,7 +60,7 @@ function Index() {
       <section className="mx-auto max-w-7xl px-4 pt-16 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="eyebrow text-primary">Featured worldwide</p>
+            <p className="eyebrow text-primary">USA · Dubai · Abu Dhabi</p>
             <h2 className="mt-2 text-3xl font-medium sm:text-4xl">
               {results.length} {results.length === 1 ? "home" : "homes"} match your search
             </h2>
@@ -89,7 +88,7 @@ function Index() {
       <section className="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div className="grid gap-6 md:grid-cols-3">
           {[
-            { icon: Globe2, title: "Truly global", text: `Listings across ${countries.length} countries, shown in USD or AED.` },
+            { icon: Globe2, title: "Three exceptional markets", text: "Luxury homes across the USA, Dubai and Abu Dhabi, shown in USD or AED." },
             { icon: ShieldCheck, title: "Verified agencies", text: `${agencies.length} trusted partner agencies, rated by buyers and tenants.` },
             { icon: Building2, title: "Every kind of home", text: "City apartments, family houses and luxury villas — to buy or to rent." },
           ].map((f) => (

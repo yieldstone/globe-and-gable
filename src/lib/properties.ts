@@ -49,12 +49,12 @@ export const img = (id: string | undefined, w = 1200, h?: number) =>
 
 export const agencies: Agency[] = [
   { id: "skyline-realty", name: "Skyline Realty Group", city: "New York", country: "United States", founded: 2004, rating: 4.9, agents: 86, phone: "+1 212 555 0148", email: "hello@skylinerealty.com", specialty: "Luxury condos & penthouses", logoInitials: "SR" },
-  { id: "costa-luxe", name: "Costa Luxe Properties", city: "Marbella", country: "Spain", founded: 2011, rating: 4.8, agents: 34, phone: "+34 952 555 210", email: "info@costaluxe.es", specialty: "Mediterranean villas", logoInitials: "CL" },
-  { id: "maison-co", name: "Maison & Co.", city: "Paris", country: "France", founded: 1998, rating: 4.7, agents: 52, phone: "+33 1 55 50 12 34", email: "contact@maisonco.fr", specialty: "Historic city apartments", logoInitials: "MC" },
-  { id: "harbour-estates", name: "Harbour Estates", city: "Sydney", country: "Australia", founded: 2008, rating: 4.8, agents: 41, phone: "+61 2 5550 1290", email: "team@harbourestates.com.au", specialty: "Waterfront homes, Asia-Pacific", logoInitials: "HE" },
-  { id: "kensington-rowe", name: "Kensington & Rowe", city: "London", country: "United Kingdom", founded: 1987, rating: 4.9, agents: 120, phone: "+44 20 5550 7781", email: "enquiries@kensingtonrowe.co.uk", specialty: "Prime residential, UK & Canada", logoInitials: "KR" },
+  { id: "costa-luxe", name: "Biscayne Luxe Properties", city: "Miami", country: "United States", founded: 2011, rating: 4.8, agents: 34, phone: "+1 305 555 0121", email: "info@biscayneluxe.example", specialty: "Oceanfront condos & villas", logoInitials: "BL" },
+  { id: "maison-co", name: "Manhattan & Co.", city: "New York", country: "United States", founded: 1998, rating: 4.7, agents: 52, phone: "+1 212 555 0134", email: "contact@manhattanco.example", specialty: "City apartments & townhouses", logoInitials: "MC" },
+  { id: "harbour-estates", name: "Saadiyat Harbour Estates", city: "Abu Dhabi", country: "United Arab Emirates", founded: 2008, rating: 4.8, agents: 41, phone: "+971 2 555 0129", email: "team@saadiyatharbour.example", specialty: "Island villas & waterfront residences", logoInitials: "SH" },
+  { id: "kensington-rowe", name: "Pacific & Rowe", city: "Los Angeles", country: "United States", founded: 1987, rating: 4.9, agents: 120, phone: "+1 310 555 0178", email: "enquiries@pacificrowe.example", specialty: "Beverly Hills estates & coastal homes", logoInitials: "PR" },
   { id: "gulf-prime", name: "Gulf Prime Realty", city: "Dubai", country: "United Arab Emirates", founded: 2014, rating: 4.6, agents: 63, phone: "+971 4 555 0192", email: "sales@gulfprime.ae", specialty: "Beachfront & new developments", logoInitials: "GP" },
-  { id: "alpine-coast", name: "Alpine & Coast", city: "Zermatt", country: "Switzerland", founded: 2002, rating: 4.9, agents: 18, phone: "+41 27 555 04 40", email: "stay@alpinecoast.ch", specialty: "Mountain chalets & seasonal rentals", logoInitials: "AC" },
+  { id: "alpine-coast", name: "Yas & Coast", city: "Abu Dhabi", country: "United Arab Emirates", founded: 2002, rating: 4.9, agents: 18, phone: "+971 2 555 0140", email: "hello@yasandcoast.example", specialty: "Yas Island townhouses & luxury rentals", logoInitials: "YC" },
 ];
 
 export function countriesIn(list: Property[]) {

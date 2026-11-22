@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { convertFromUsd, convertToUsd } from "./currency";
 import { formatArea, toSquareMeters } from "./units";
-import { filterProperties, parseFilters, regionFor, sortProperties, type Property } from "./properties";
+import { agencies, filterProperties, parseFilters, regionFor, sortProperties, type Property } from "./properties";
 import { whatsappLink } from "./whatsapp";
 import { calculateMortgage, calculateRentalRoi } from "./mortgage";
 
@@ -15,6 +15,11 @@ const dubai: Property = { ...property, id: "dubai", kind: "Villa", country: "Uni
 const abuDhabi: Property = { ...dubai, id: "abu", kind: "Townhouse", city: "Abu Dhabi", beds: 2, features: [] };
 
 describe("marketplace rules", () => {
+  it("keeps every sample agency in the USA, Dubai or Abu Dhabi", () => {
+    expect(agencies.length).toBeGreaterThan(0);
+    expect([...new Set(agencies.map(regionFor))].sort()).toEqual(["Abu Dhabi", "Dubai", "USA"]);
+    expect(agencies.every((a) => a.country === "United States" || (a.country === "United Arab Emirates" && ["Dubai", "Abu Dhabi"].includes(a.city)))).toBe(true);
+  });
   it("converts USD to AED and back at the dirham reference rate", () => {
     expect(convertFromUsd(1000, "AED")).toBe(3672.5);
     expect(convertToUsd(3672.5, "AED")).toBe(1000);
