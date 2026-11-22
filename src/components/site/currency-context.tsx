@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type Context, type ReactNode } from "react";
 import type { Currency } from "@/lib/currency";
 import { formatPriceFromUsd } from "@/lib/currency";
 
@@ -8,7 +8,9 @@ interface CurrencyCtx {
   price: (usd: number, opts?: { compact?: boolean }) => string;
 }
 
-const Ctx = createContext<CurrencyCtx | null>(null);
+// Preserve context identity when hot reload updates consumers without remounting the root provider.
+const g = globalThis as typeof globalThis & { __atlasCurrencyCtx?: Context<CurrencyCtx | null> };
+const Ctx = g.__atlasCurrencyCtx ?? (g.__atlasCurrencyCtx = createContext<CurrencyCtx | null>(null));
 const KEY = "atlas-currency";
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {

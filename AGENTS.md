@@ -42,3 +42,4 @@ use the editor.
 - Sort with `sortProperties` on both home and search; its Featured-first priority must apply before any secondary sort.
 - Property-level financial estimates reuse pure mortgage and rental ROI functions; ROI uses user-entered rental income and operating costs rather than invented market returns.
 - WhatsApp links use only phone numbers already revealed by sign-in or inquiry; missing or non-international numbers fall back to inquiry so public links cannot leak private contact details.
+- Keep app-wide auth and currency context identities stable across hot reloads so newly evaluated consumers still match already-mounted providers.
