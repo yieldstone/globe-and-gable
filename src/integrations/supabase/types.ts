@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      agency_profiles: {
+        Row: {
+          city: string
+          country: string
+          created_at: string
+          id: string
+          name: string
+          specialty: string
+          user_id: string
+        }
+        Insert: {
+          city: string
+          country: string
+          created_at?: string
+          id?: string
+          name: string
+          specialty: string
+          user_id: string
+        }
+        Update: {
+          city?: string
+          country?: string
+          created_at?: string
+          id?: string
+          name?: string
+          specialty?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           created_at: string

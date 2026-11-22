@@ -43,6 +43,13 @@
       "when": 1795342239386,
       "tag": "0005_restrict_listing_status_writes",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795365460824,
+      "tag": "0006_free_agency_profiles",
+      "breakpoints": true
     }
   ]
 }

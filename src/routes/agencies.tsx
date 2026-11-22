@@ -5,6 +5,8 @@ import { AgencyPricing } from "@/components/site/agency-pricing";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { agencies, img } from "@/lib/properties";
 import { propertiesQuery } from "@/lib/properties.queries";
+import { agencyProfilesQuery } from "@/lib/agencies.queries";
+import { AgencyProfileForm } from "@/components/site/agency-profile-form";
 
 export const Route = createFileRoute("/agencies")({
   head: () => ({
@@ -17,12 +19,15 @@ export const Route = createFileRoute("/agencies")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(propertiesQuery()),
+  loader: async ({ context }) => {
+    await Promise.all([context.queryClient.ensureQueryData(propertiesQuery()), context.queryClient.ensureQueryData(agencyProfilesQuery())]);
+  },
   component: AgenciesPage,
 });
 
 function AgenciesPage() {
   const { data: properties } = useSuspenseQuery(propertiesQuery());
+  const { data: profiles } = useSuspenseQuery(agencyProfilesQuery());
   return (
     <>
       <section className="bg-navy pb-16 pt-12 text-navy-foreground">
@@ -30,10 +35,16 @@ function AgenciesPage() {
           <p className="eyebrow text-highlight">Partners</p>
           <h1 className="mt-2 text-4xl font-medium sm:text-5xl">Agencies across the USA, Dubai & Abu Dhabi</h1>
           <p className="mt-3 max-w-xl text-navy-muted">Local experts who know every street, school and building in their market.</p>
-          <Button asChild variant="hero" className="mt-6"><a href="#pricing">List your agency</a></Button>
+          <Button asChild variant="hero" className="mt-6"><a href="#agency-profile">Create free agency profile</a></Button>
         </div>
       </section>
       <div className="mx-auto mt-10 grid max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-2">
+        {profiles.map((a) => <article key={a.id} className="rounded-lg border bg-card p-6 shadow-card">
+          <h2 className="text-xl font-medium">{a.name}</h2>
+          <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="size-3.5" />{a.city}, {a.country}</p>
+          <p className="mt-3 text-sm">{a.specialty}</p>
+          <p className="mt-4 text-xs font-semibold text-primary">Founding Partner Access – Free Listing</p>
+        </article>)}
         {agencies.map((a) => {
           const listings = properties.filter((p) => p.agencyId === a.id);
           return (
@@ -73,6 +84,7 @@ function AgenciesPage() {
         })}
       </div>
       <AgencyPricing />
+      <AgencyProfileForm />
     </>
   );
 }

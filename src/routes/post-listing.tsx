@@ -16,6 +16,7 @@ import { toSquareMeters } from "@/lib/units";
 import { AMENITIES, type Amenity } from "@/lib/properties";
 import { convertToUsd } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { canPublishForFree } from "@/lib/founding-access";
 
 export const Route = createFileRoute("/post-listing")({
   head: () => ({
@@ -62,11 +63,12 @@ function PostListingPage() {
           <p className="eyebrow text-highlight">For owners & agents</p>
           <h1 className="mt-2 text-4xl font-medium sm:text-5xl">Post a listing</h1>
           <p className="mt-3 max-w-xl text-navy-muted">Reach buyers and tenants across the USA, Dubai and Abu Dhabi.</p>
+          <p className="mt-4 inline-block rounded-md bg-highlight px-3 py-1.5 text-xs font-semibold text-highlight-foreground">Founding Partner Access – Free Listing</p>
         </div>
       </section>
       {loading ? (
         <div className="grid place-items-center py-24 text-muted-foreground"><Loader2 className="size-6 animate-spin" /></div>
-      ) : user ? (
+      ) : user && canPublishForFree(Boolean(user)) ? (
         <ListingForm userId={user.id} />
       ) : (
         <div className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">

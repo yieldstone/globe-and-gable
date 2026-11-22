@@ -18,8 +18,12 @@
 - [x] Viewing/inquiry form saving to inquiries
 - [x] Agency pricing section (Starter / Pro / Featured)
 - [x] Seller phone hidden from public; legacy tables locked
-- [ ] Charge for Pro/Featured plans (needs payments setup — waiting on user)
+- [ ] Charge for Pro/Featured plans (paused while founding-partner access is free)
 
 - [x] Restore Globe And Gable branding throughout the website
 - [x] Replace out-of-market sample listings with USA, Dubai and Abu Dhabi homes (6 USA, 3 Dubai, 3 Abu Dhabi)
 - [x] Update market headlines and verify all three markets, maps, AED switching and mobile layout in the live website
+
+- [x] Remove paid-plan prompts and add free founding-partner access
+- [x] Enable free agency profile creation for registered users
+- [ ] Verify signed-in free listing and agency publication (no registered accounts exist; public flows and six free-access rules verified)

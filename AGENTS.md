@@ -31,7 +31,7 @@ use the editor.
 
 ## Project rules
 
-- Listings live in the `properties` table and are read through public server functions in `src/lib/properties.functions.ts` (publishable client, SSR-safe); only the agency directory stays static in `src/lib/properties.ts`. Prices are stored in USD and converted for display via `src/lib/currency.ts`, so currency switching never touches the data.
+- Listings live in the `properties` table and are read through public server functions in `src/lib/properties.functions.ts` (publishable client, SSR-safe); sample agencies remain static while user agency profiles use `agency_profiles`, owner-scoped browser writes and public SSR reads. Prices are stored in USD and converted for display via `src/lib/currency.ts`, so currency switching never touches the data.
 - Listing writes go from the browser Supabase client under the signed-in user's session; RLS enforces owner-only insert/update/delete, so no server function bypasses it.
 - Listing photos sit in a private storage bucket (the workspace blocks public buckets); rows store storage paths for uploads and full URLs for seeded samples, and the read server function turns paths into signed URLs.
 - The legacy `listings` / `listing_contacts` tables are deprecated and unused; never read or write them.
@@ -45,3 +45,4 @@ use the editor.
 - Keep app-wide auth and currency context identities stable across hot reloads so newly evaluated consumers still match already-mounted providers.
 - Replace seeded sample rows in place using their IDs and `user_id IS NULL`; this preserves existing detail links and inquiries without modifying user-owned homes.
 - Keep live marketplace checks in `tests/target_markets_check.py`; public-page browser checks validate persisted sample locations rather than duplicated test fixtures.
+- Centralize temporary publishing access in `src/lib/founding-access.ts`; listing and agency submission must not depend on paid plans or grant trust badges automatically.
