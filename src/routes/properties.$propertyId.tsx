@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatArea } from "@/lib/units";
-import { whatsappLink } from "@/lib/whatsapp";
+import { listingWhatsappLink } from "@/lib/whatsapp";
 import { PropertyCalculator } from "@/components/site/property-calculator";
 import { FeaturedBadge, VerifiedAgentBadge } from "@/components/site/trust-badges";
 import { PropertyCard } from "@/components/site/property-card";
@@ -67,6 +67,8 @@ function PropertyPage() {
   const agency = p.agencyId ? getAgency(p.agencyId) : undefined;
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
+  const [roiOpen, setRoiOpen] = useState(false);
+  useEffect(() => setRoiOpen(false), [p.id]);
   const { user } = useAuth();
   const fetchPhone = useServerFn(getSellerPhone);
   const [phone, setPhone] = useState<string | null>(null);
@@ -78,7 +80,7 @@ function PropertyPage() {
     setPhone(null);
   }, [p.id]);
   const visiblePhone = inquiryPhone ?? (user ? phone : null);
-  const whatsapp = propertyUrl ? whatsappLink(visiblePhone, p.title, propertyUrl) : null;
+  const whatsapp = propertyUrl ? listingWhatsappLink(p, price(p.priceUsd), propertyUrl, visiblePhone) : null;
   useEffect(() => {
     if (!user) return;
     let active = true;
@@ -157,7 +159,14 @@ function PropertyPage() {
             </>
           )}
 
-          {p.listing === "buy" && <PropertyCalculator key={p.id} purchasePrice={p.priceUsd} />}
+          {p.listing === "buy" && (
+            <div className="mt-10">
+              <Button size="lg" variant={roiOpen ? "outline" : "default"} aria-expanded={roiOpen} onClick={() => setRoiOpen((o) => !o)}>
+                <Calculator /> {roiOpen ? "Hide ROI estimator" : "Calculate ROI"}
+              </Button>
+              {roiOpen && <PropertyCalculator key={p.id} purchasePrice={p.priceUsd} />}
+            </div>
+          )}
 
           <h2 className="mt-10 text-2xl font-medium">Location</h2>
           <p className="mt-1 text-sm text-muted-foreground">{p.neighborhood}, {p.city}</p>
@@ -202,9 +211,9 @@ function PropertyPage() {
               <Mail /> Schedule a viewing
             </Button>
             {whatsapp ? (
-              <Button asChild variant="whatsapp" size="lg" className="mt-2 w-full"><a href={whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle />WhatsApp Agent</a></Button>
+              <Button asChild variant="whatsapp" size="lg" className="mt-2 w-full"><a href={whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle />Inquire via WhatsApp</a></Button>
             ) : (
-              <Button variant="whatsapp" size="lg" className="mt-2 w-full" onClick={() => setContactOpen(true)}><MessageCircle />WhatsApp Agent</Button>
+              <Button variant="whatsapp" size="lg" className="mt-2 w-full" onClick={() => setContactOpen(true)}><MessageCircle />Inquire via WhatsApp</Button>
             )}
             {!whatsapp && visiblePhone && <p className="mt-2 text-xs text-muted-foreground">WhatsApp requires an international phone number. Please contact the agent by inquiry or phone.</p>}
             {visiblePhone ? (

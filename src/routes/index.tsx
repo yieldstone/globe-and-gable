@@ -36,7 +36,7 @@ function Index() {
         <img src={heroImg} alt="" width={1920} height={1088} className="absolute inset-0 -z-20 size-full object-cover" />
         <div className="absolute inset-0 -z-10 bg-hero-overlay" />
         <div className="mx-auto max-w-7xl px-4 pb-40 pt-20 sm:px-6 sm:pt-28">
-          <p className="eyebrow text-highlight">3 target markets · {properties.length} curated listings</p>
+          <p className="eyebrow text-highlight">USA · Dubai · Abu Dhabi — Curated Luxury Real Estate</p>
           <h1 className="mt-4 max-w-3xl text-4xl font-medium leading-[1.05] sm:text-6xl">
             Globe And Gable
           </h1>

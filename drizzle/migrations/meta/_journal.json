@@ -50,6 +50,13 @@
       "when": 1795365460824,
       "tag": "0006_free_agency_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795543048887,
+      "tag": "0007_unique_sample_photos",
+      "breakpoints": true
     }
   ]
 }
