@@ -43,6 +43,5 @@ use the editor.
 - Property-level financial estimates reuse pure mortgage and rental ROI functions; ROI uses user-entered rental income and operating costs rather than invented market returns.
 - WhatsApp links use the public agency business number for agency listings, otherwise only seller phones already revealed by sign-in or inquiry; missing or non-international numbers fall back to inquiry so public links cannot leak private contact details.
 - Keep app-wide auth and currency context identities stable across hot reloads so newly evaluated consumers still match already-mounted providers.
-- Replace seeded sample rows in place using their IDs and `user_id IS NULL`; this preserves existing detail links and inquiries without modifying user-owned homes.
-- Keep live marketplace checks in `tests/target_markets_check.py`; public-page browser checks validate persisted sample locations rather than duplicated test fixtures.
 - Centralize temporary publishing access in `src/lib/founding-access.ts`; listing and agency submission must not depend on paid plans or grant trust badges automatically.
+- The marketplace ships with no sample listings; pages show the off-market portfolio (agency submit + investor `access_requests`, insert-only for the public) whenever there are zero listings.

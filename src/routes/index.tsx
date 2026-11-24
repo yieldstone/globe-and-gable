@@ -6,7 +6,8 @@ import heroImg from "@/assets/hero-city.jpg";
 import { Button } from "@/components/ui/button";
 import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
-import { agencies, filterProperties, sortProperties, type PropertyFilters } from "@/lib/properties";
+import { OffMarketPortfolio } from "@/components/site/off-market-portfolio";
+import { filterProperties, sortProperties, type PropertyFilters } from "@/lib/properties";
 import { propertiesQuery } from "@/lib/properties.queries";
 
 export const Route = createFileRoute("/")({
@@ -47,6 +48,9 @@ function Index() {
         </div>
       </section>
 
+      {properties.length === 0 ? (
+        <div className="relative z-10 mx-auto -mt-28 max-w-7xl px-4 sm:px-6"><OffMarketPortfolio /></div>
+      ) : (<>
       <div className="relative z-10 mx-auto -mt-28 max-w-7xl px-4 sm:px-6">
         <SearchFilters
           value={filters}
@@ -84,12 +88,13 @@ function Index() {
           </div>
         )}
       </section>
+      </>)}
 
       <section className="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div className="grid gap-6 md:grid-cols-3">
           {[
             { icon: Globe2, title: "Three exceptional markets", text: "Luxury homes across the USA, Dubai and Abu Dhabi, shown in USD or AED." },
-            { icon: ShieldCheck, title: "Verified agencies", text: `${agencies.length} trusted partner agencies, rated by buyers and tenants.` },
+            { icon: ShieldCheck, title: "Verified agencies", text: "Trusted partner agencies, reviewed before they are verified." },
             { icon: Building2, title: "Every kind of home", text: "City apartments, family houses and luxury villas — to buy or to rent." },
           ].map((f) => (
             <div key={f.title} className="rounded-2xl border bg-card p-6 shadow-card">

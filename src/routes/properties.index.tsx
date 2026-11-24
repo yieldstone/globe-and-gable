@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { OffMarketPortfolio } from "@/components/site/off-market-portfolio";
 import { PropertyCard } from "@/components/site/property-card";
 import { SearchFilters } from "@/components/site/search-filters";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,9 @@ function PropertiesPage() {
           </h1>
         </div>
       </section>
+      {properties.length === 0 ? (
+        <div className="mx-auto -mt-16 max-w-7xl px-4 sm:px-6"><OffMarketPortfolio /></div>
+      ) : (<>
       <div className="mx-auto -mt-16 max-w-7xl px-4 sm:px-6">
         <SearchFilters value={filters} options={properties} onChange={(next) => navigate({ search: next, replace: true })} />
       </div>
@@ -81,6 +85,7 @@ function PropertiesPage() {
           </div>
         )}
       </section>
+      </>)}
     </>
   );
 }

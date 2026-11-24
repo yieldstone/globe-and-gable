@@ -41,11 +41,8 @@ export interface Property {
   verifiedAgent?: boolean;
 }
 
-/** Accepts a complete image URL (as stored in the database) or a bare Unsplash photo id. */
-export const img = (id: string | undefined, w = 1200, h?: number) =>
-  id?.startsWith("http")
-    ? id
-    : `https://images.unsplash.com/photo-${id ?? ""}?auto=format&fit=crop&w=${w}${h ? `&h=${h}` : ""}&q=80`;
+/** Photos are stored as complete (signed) URLs; size hints are kept for call-site compatibility. */
+export const img = (url: string | undefined, _w?: number, _h?: number) => url ?? "";
 
 export const agencies: Agency[] = [
   { id: "skyline-realty", name: "Skyline Realty Group", city: "New York", country: "United States", founded: 2004, rating: 4.9, agents: 86, phone: "+1 212 555 0148", email: "hello@skylinerealty.com", specialty: "Luxury condos & penthouses", logoInitials: "SR" },

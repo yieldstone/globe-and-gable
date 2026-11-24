@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_requests: {
+        Row: {
+          budget: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          market: string | null
+          message: string | null
+          phone: string | null
+        }
+        Insert: {
+          budget?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          market?: string | null
+          message?: string | null
+          phone?: string | null
+        }
+        Update: {
+          budget?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          market?: string | null
+          message?: string | null
+          phone?: string | null
+        }
+        Relationships: []
+      }
       agency_profiles: {
         Row: {
           city: string
