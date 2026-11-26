@@ -19,6 +19,7 @@ import type { Currency } from "@/lib/currency";
 const nav = [
   { to: "/properties", label: "Properties" },
   { to: "/mortgage-calculator", label: "Mortgage Calculator" },
+  { to: "/roi-calculator", label: "ROI Calculator" },
   { to: "/post-listing", label: "Post a Listing" },
   { to: "/agencies", label: "Agencies" },
 ] as const;

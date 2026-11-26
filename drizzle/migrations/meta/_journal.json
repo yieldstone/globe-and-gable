@@ -71,6 +71,13 @@
       "when": 1795549324163,
       "tag": "0009_validate_access_requests_insert",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1795713831626,
+      "tag": "0010_create_white_label_requests",
+      "breakpoints": true
     }
   ]
 }

@@ -15,6 +15,7 @@ import { Route as AgenciesRouteImport } from './routes/agencies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calculator'
 import { Route as PostListingRouteImport } from './routes/post-listing'
+import { Route as RoiCalculatorRouteImport } from './routes/roi-calculator'
 import { Route as AuthenticatedMyInquiriesRouteImport } from './routes/_authenticated/my-inquiries'
 import { Route as PropertiesIndexRouteImport } from './routes/properties.index'
 import { Route as PropertiesPropertyIdRouteImport } from './routes/properties.$propertyId'
@@ -48,6 +49,11 @@ const PostListingRoute = PostListingRouteImport.update({
   path: '/post-listing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoiCalculatorRoute = RoiCalculatorRouteImport.update({
+  id: '/roi-calculator',
+  path: '/roi-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedMyInquiriesRoute =
   AuthenticatedMyInquiriesRouteImport.update({
     id: '/my-inquiries',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
+  '/roi-calculator': typeof RoiCalculatorRoute
   '/my-inquiries': typeof AuthenticatedMyInquiriesRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties/': typeof PropertiesIndexRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
+  '/roi-calculator': typeof RoiCalculatorRoute
   '/my-inquiries': typeof AuthenticatedMyInquiriesRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties': typeof PropertiesIndexRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/post-listing': typeof PostListingRoute
+  '/roi-calculator': typeof RoiCalculatorRoute
   '/_authenticated/my-inquiries': typeof AuthenticatedMyInquiriesRoute
   '/properties/$propertyId': typeof PropertiesPropertyIdRoute
   '/properties/': typeof PropertiesIndexRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
+    | '/roi-calculator'
     | '/my-inquiries'
     | '/properties/$propertyId'
     | '/properties/'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
+    | '/roi-calculator'
     | '/my-inquiries'
     | '/properties/$propertyId'
     | '/properties'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mortgage-calculator'
     | '/post-listing'
+    | '/roi-calculator'
     | '/_authenticated/my-inquiries'
     | '/properties/$propertyId'
     | '/properties/'
@@ -138,6 +150,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   MortgageCalculatorRoute: typeof MortgageCalculatorRoute
   PostListingRoute: typeof PostListingRoute
+  RoiCalculatorRoute: typeof RoiCalculatorRoute
   PropertiesPropertyIdRoute: typeof PropertiesPropertyIdRoute
   PropertiesIndexRoute: typeof PropertiesIndexRoute
 }
@@ -186,6 +199,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostListingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/roi-calculator': {
+      id: '/roi-calculator'
+      path: '/roi-calculator'
+      fullPath: '/roi-calculator'
+      preLoaderRoute: typeof RoiCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/my-inquiries': {
       id: '/_authenticated/my-inquiries'
       path: '/my-inquiries'
@@ -228,6 +248,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   MortgageCalculatorRoute: MortgageCalculatorRoute,
   PostListingRoute: PostListingRoute,
+  RoiCalculatorRoute: RoiCalculatorRoute,
   PropertiesPropertyIdRoute: PropertiesPropertyIdRoute,
   PropertiesIndexRoute: PropertiesIndexRoute,
 }

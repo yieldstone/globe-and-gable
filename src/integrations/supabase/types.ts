@@ -332,6 +332,33 @@ export type Database = {
         }
         Relationships: []
       }
+      white_label_requests: {
+        Row: {
+          agency_name: string
+          contact: string
+          created_at: string
+          full_name: string
+          id: string
+          market: string
+        }
+        Insert: {
+          agency_name: string
+          contact: string
+          created_at?: string
+          full_name: string
+          id?: string
+          market: string
+        }
+        Update: {
+          agency_name?: string
+          contact?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          market?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -23,6 +23,7 @@ export function SiteFooter() {
           <p className="eyebrow text-navy-muted">Tools</p>
           <ul className="mt-4 space-y-2 text-sm">
             <li><Link to="/mortgage-calculator" className="hover:text-highlight">Mortgage calculator</Link></li>
+            <li><Link to="/roi-calculator" className="hover:text-highlight">Yieldstone ROI calculator</Link></li>
             <li><Link to="/post-listing" className="hover:text-highlight">Post a listing</Link></li>
           </ul>
         </div>

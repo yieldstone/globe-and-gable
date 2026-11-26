@@ -27,3 +27,9 @@
 - [x] Remove paid-plan prompts and add free founding-partner access
 - [x] Enable free agency profile creation for registered users
 - [ ] Verify signed-in free listing and agency publication (no registered accounts exist; public flows and six free-access rules verified)
+
+## Yieldstone ROI Calculator
+- [x] Add market-aware USD/AED switching across inputs, results, charts, table and PDF
+- [x] Add ready and off-plan projections with construction payments and post-handover rent
+- [x] Add white-label agency demo modal, private lead storage and WhatsApp CTA
+- [x] Test financial rules and verify desktop/mobile flows in the preview (45 tests; USD/AED, Dubai/Abu Dhabi off-plan, PDF, modal and 390px checks)
